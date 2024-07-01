@@ -1,0 +1,274 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container">
+    <h3>Профиль пользователя</h3>
+    <hr/>
+    <div class="alert alert-danger d-none error" role="alert"></div>
+     <div class="alert alert-success d-none response" role="alert"></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table">
+                <form method="POST">
+                    {% csrf_token %}
+                    <tr>
+                        <td>ФИО</td>
+                        <!-- <td><input type="text" class="form-control form-value text-box single-line" value="{{data_user.fio}}"></td> -->
+                        <td>{{form.fio}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Телефон</td>
+                        <!-- <td><input id="online_phone" name="phone" type="tel" maxlength="50"
+                            required="required"
+                           value="{{data_user.phone}}"
+                           pattern="[+]{1}7 [(]{1}[0-9]{3}[)]{1} [0-9]{3} [0-9]{4}"
+                           placeholder="+7 (999) 111 3333" class="form-control"></td> -->
+                        <td>{{form.phone}}</td>
+                        <td><a href="#" data-bs-toggle="modal" data-bs-target="#phoneModal" class="btn">
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#007cba"
+                                    class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                <path
+                                        d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+                            </svg>
+                        </a></td>
+                    </tr>
+                    <tr>
+                        <td>E-mail</td>
+                        <td>{{form.email}}</td>
+                        <td><a href="#" data-bs-toggle="modal" data-bs-target="#emailModal" class="btn">
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#007cba"
+                                    class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                <path
+                                        d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+                            </svg>
+                        </a></td>
+                        <!-- <td><input type="email" class="form-control form-value text-box single-line" value="{{data_user.email}}"></td> -->
+                    </tr>
+                    <tr>
+                        <td>Пароль</td>
+                        <td>{{form.password}}</td>
+                        <!-- <td><input type="password" value="12345678" class="form-control form-value text-box single-line"></td> -->
+                        <td><a href="#" data-bs-toggle="modal" data-bs-target="#passwordModal" class="btn">
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#007cba"
+                                    class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                <path
+                                        d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+                            </svg>
+                        </a></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Способ получения платежных документов</td>
+
+                    </tr>
+                    <tr>
+                        </form>
+                        <!-- <td colspan="2">{{form.rec_doc}}</td> -->
+                <form action="{% url 'users:edit_rec_doc_ajax' %}" method="post" id="form_rec_doc">
+                    {% csrf_token %}
+                        {% if data_user.rec_doc == 1 %}
+                    <td colspan="2"><input type="radio" name="rec_doc" value="0" id="paper0"> <label for="paper0">Бумажный</label> &nbsp;&nbsp;&nbsp;<input
+                            type="radio" name="rec_doc" checked value="1" id="el0"> <label for="el0">E-mail</label>
+                        </td>
+                        {%else%}
+                        <td colspan="2"><input type="radio" name="rec_doc" value="0" checked id="paper1"> <label for="paper1">Бумажный</label> &nbsp;&nbsp;&nbsp;<input
+                                type="radio" name="rec_doc" value="1" id="el1"> <label for="el1">E-mail</label>
+                        </td>
+                        {%endif%}
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="submit" value="Сохранить" class="btn btn-card"></td>
+                    </tr>
+                    </form>
+            </table>
+        </div>
+    </div>
+
+</div><!--container-->
+<!--МОДАЛЬНЫЕ ОКНА-->
+<!-- phoneModal -->
+<div class="modal fade" id="phoneModal" tabindex="-1" aria-labelledby="phoneModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="phoneModalLabel">Peдактирование телефона</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="row">
+                        <span style="color: gray;">Мобильный телефон*</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row">
+                        <form action="{%url 'users:edit_phone_ajax' %}" id="form_phone_edit" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="step" value="phone">
+                            <div class="alert alert-danger d-none error_phone" role="alert"></div>
+
+                            {{form_phone.phone}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row">
+                        <b>Введите номер телефона</b>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" class="btn btn-card">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- phoneModal END-->
+
+<!-- emailModal -->
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">Peдактирование E-mail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <span style="color: gray;">E-mail*</span>
+                    </div>
+                </div>
+                <form id="form_email_edit" action="{% url 'users:edit_email_ajax' %}" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col">
+                            <div class="alert alert-danger d-none error_email" role="alert"></div>
+                            {{form_email.email}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            E-mail будет изменен после подтверждения.
+                        </div>
+                    </div>
+                    <!--<div class="row">
+                        <div class="col">
+                            <input type="checkbox" checked label=""> Применить данный e-mail для рассылки
+                            счетов
+                        </div>
+                    </div>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" class="btn btn-card">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- emailModal END-->
+
+<!-- passwordModal -->
+         <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel"
+             aria-hidden="true">
+             <div class="modal-dialog">
+                 <div class="modal-content">
+                     <div class="modal-header">
+                         <h5 class="modal-title" id="passwordModalLabel">Изменение пароля</h5>
+                         <button type="button" class="btn-close" data-bs-dismiss="modal"
+                             aria-label="Close"></button>
+                     </div>
+                     <div class="modal-body">
+
+                <form method="post" action="{% url 'users:password_change_ajax' %}" id="form_change_password">
+                            {% csrf_token %}
+                            <input type="hidden"  name="step" value="password">
+
+                         <div class="row">
+                             <div class="col">
+                                 <span style="color: gray;">Придумайте длинный пароль из букв и цифр, который вам
+                                     будет легко запомнить, а другим — сложно угадать</span>
+                             </div>
+                         </div>
+                         <div class="row mt-2">
+                             <div class="col">
+                                 <span style="color: gray;"><small>Текущий пароль*</small></span>
+                             </div>
+                         </div>
+                         <div class="row ">
+                             <div class="col">
+                                 <div class="password">
+                                    <div class="alert alert-danger d-none error_old" role="alert"></div>
+                                    {{form_password.old_password}}
+                                     {% comment %} <input type="password" id="edit_password" name="password"
+                                         class="form-control form-value" required> {% endcomment %}
+                                     {% comment %} <a href="#" class="password-control"></a> {% endcomment %}
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <div class="col">
+                                 <span style="color: gray;"><small>Придумайте пароль*</small></span>
+                             </div>
+                         </div>
+                         <div class="row ">
+                             <div class="col">
+                                 <div class="password">
+                                    <div class="alert alert-danger d-none error_password2" role="alert"></div>
+                                    {{form_password.new_password1}}
+                                     {% comment %} <input type="password" id="password_new" name="password_new"
+                                         class="form-control form-value" required> {% endcomment %}
+                                     {% comment %} <a href="#" class="password-control_new"></a> {% endcomment %}
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <div class="col">
+                                 <span style="color: gray;"><small>Повтор нового пароля*</small></span>
+                             </div>
+                         </div>
+                         <div class="row ">
+                             <div class="col">
+                                 <div class="password">
+                                    {{ form_password.new_password2.errors }}
+                                    {{form_password.new_password2}}
+                                     {% comment %} <input type="password" id="password_re" name="password_re"
+                                         class="form-control form-value" required> {% endcomment %}
+                                     {% comment %} <a href="#" class="password-control_re"></a> {% endcomment %}
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="row">
+                            <div class="col">
+                                <input type='checkbox' id="show_pass_change"> <label for="show_pass_change">Показать пароль</label>
+
+                            </div>
+                         </div>
+
+
+                     </div><!--modal body-->
+                     <div class="modal-footer">
+                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                         <button type="submit" class="btn btn-dark">Сохранить</button>
+                     </form>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <!-- passwordModal END-->
+
+<!--МОДАЛЬНЫЕ ОКНА END-->
+
+
+{% endblock content %}    

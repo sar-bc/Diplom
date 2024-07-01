@@ -1,0 +1,30 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row py-1 px-2">
+        <div class="col-sm-12">
+            <div class="card">
+                <h5 class="card-header">{{document.title}}</h5>
+                
+                <div class="card-body">
+                    <p style="text-align: left"><span style="color:gray;"><i class="bi bi-calendar-week"></i> Создано: {{document.publish|date:"d-m-Y" }}<br><i class="bi bi-eye"></i> Просмотров: {{count}}</span></p>
+                    {{document.content|safe}}
+                
+                {% if document.file %}
+                <hr class="space m" />
+                <iframe width="100%" height="800px" src="{{document.file.url}}" type="application/pdf"></iframe>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>   
+</div>   
+{% endblock %}
+
+
+{% block footer %}
+{% include "main/footer.html" with page=card %}
+{% endblock %}

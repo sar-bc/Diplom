@@ -1,0 +1,41 @@
+{% extends 'main/base.html' %}
+
+
+
+{% block content %}
+<div class="container">
+    <h3>Вход в личный кабинет</h3>
+    <hr />
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="login">
+                <form method="post">
+                    
+                <div class="login_title ">Личный кабинет</div>
+                 
+                <div class="login_block">Вход</div>
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="login_input text-center py-2">
+                    <button type="submit" class="btn btn-card">ВОЙТИ</button>
+                </div>
+            </form>
+            </div><!--login-->
+        </div>
+
+        <div class="col-md-6 col-sm-12">
+            <p>
+                <b>Личный кабинет</b> - удобный сервис, позволяющий собственникам и арендаторам
+                помещений в режиме онлайн:
+            </p>
+            <ul>
+                <li><b>передавать показания</b> индивидуальных приборов учёта (счётчиков);</li>
+                <li>самостоятельно формировать копии <b>квитанций</b>;</li>
+                <li><b>просматривать начисления</b> по лицевому счёту за любой месяц;</li>
+                <li>отправлять <b>заявки</b> в обслуживающую организацию.</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

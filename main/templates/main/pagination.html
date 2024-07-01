@@ -1,0 +1,42 @@
+{% if page.paginator.num_pages > 1  %}
+<!--больше одной страницы-->
+<nav aria-label="Пример навигации по страницам">
+    <ul class="pagination justify-content-center">
+    {% if page.has_previous %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page.previous_page_number }}">&lt;</a>
+    </li>
+    {%else%}
+    <li class="page-item disabled">
+        <a class="page-link">&lt;</a>
+    </li>
+    {%endif%}
+
+
+
+    {% for p in page_all %}
+
+    {% if page.number == p %}
+    <li class="page-item active"><span class="page-link" >{{ p }}</span></li>
+    {% elif p >= page.number|add:-2 and p <= page.number|add:2  %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+    </li>
+    {% endif %}
+
+
+    {% endfor %}
+
+
+    {% if page.has_next %}
+    <li class="page-item" >
+        <a class="page-link"  href="?page={{ page.next_page_number }}">&gt;</a>
+    </li>
+    {%else%}
+    <li class="page-item disabled">
+        <a class="page-link" >&gt;</a>
+    </li>
+    {%endif%}
+    </ul>
+</nav>
+{% endif %}

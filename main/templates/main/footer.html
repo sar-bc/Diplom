@@ -1,0 +1,31 @@
+
+
+<!--FOOTER CARD-->
+<div class="container">
+    <hr/>
+    <div class="row">
+                    
+                    {% for card in cards%}
+<!--CARD-->
+<div class="col-md-4 col-sm-12 py-1">
+    <div class="container  box box-fon h-100">
+    <div class="row">
+        <div class="col">
+            <h5 class="card-title text-center"><u>{{card.title}}</u></h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {% autoescape off %}
+            {{card.description}}
+            {% endautoescape %}
+        </div>
+    </div>
+    </div>
+</div>
+<!--CARD END-->
+                    {% endfor %}
+            
+    </div><!--row-->
+</div><!--container-->
+<!--FOOTER CARD END-->

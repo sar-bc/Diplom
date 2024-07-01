@@ -1,0 +1,57 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container">
+    <h3>Новости</h3>
+    <hr/>
+        <div class="row">
+        {% for n in news_list %} 
+<!-- НОВОСТЬ START -->
+<div Class="col-md-4 col-sm-12 py-1">
+    <div class="container box box-fon h-100"> 
+        <div class="row">
+            {% if n.img %}
+            <div class="col img-box150" style="background-image: url({{n.img.url}});">
+                {%else%}
+                <div class="col img-box150" style="background-image: url({% static 'main/img/dom.png' %});">
+                {%endif%}
+                <span class="box-data ">{{n.publish|date:"d-m-Y" }}</span> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="box-content">
+                    <h4 class="text-m text-center">{{n.title}}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col ">
+                <div class="box-content">
+                    {{n.body|safe|truncatewords:15}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center ">
+                <a class="btn btn-sm btn-card" href="{{ n.get_absolute_url }}">Подробнее</a>
+            </div>
+            <hr class="space m" />
+        </div>
+    </div>
+</div>   
+<!--НОВОСТЬ END-->
+
+    {% endfor %}
+
+    {% include "main/pagination.html" with page=news_list %}
+
+
+{% endblock %}
+
+
+{% block footer %}
+{% include "main/footer.html" with page=card %}
+{% endblock %}

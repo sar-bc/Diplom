@@ -1,0 +1,39 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container">
+<h1>{{title}}</h1>
+<hr class="space m" />
+    <div class="row  py-1 px-2 ">
+    {% for d in docs %} 
+<!--CARD-->
+<div class="col-md-4 col-sm-12 my-2">
+    <div class="card h-100">
+        <div class="card-header">{{d.title}}</div>
+        <div class="card-body">
+        {% comment %} <h5 class="card-title">{{d.title}}</h5> {% endcomment %}
+        <p style="text-align: left"><i class="bi bi-calendar-week"></i> <span class="">{{d.publish|date:"d-m-Y" }}</span></p>
+        <p class="card-text">{{d.content|safe|truncatewords:15}}</p>
+        
+        </div>
+        <div class="card-footer text-body-secondary text-center">
+            <a href="{{ d.get_absolute_url }}" class="btn btn-card">Подробней</a>
+        </div>
+    </div>
+</div><!--col-->
+<!--CARD END-->
+{% endfor %}
+
+{% include "main/pagination.html" with page=docs %}
+
+    
+    </div><!--row-->
+</div><!--container-->
+{% endblock %}
+
+
+{% block footer %}
+{% include "main/footer.html" with page=card %}
+{% endblock %}

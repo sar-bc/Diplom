@@ -1,0 +1,29 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row py-1 px-2">
+        <div class="col-sm-12">
+            <div class="card">
+                <h5 class="card-header">{{info.title}}</h5>
+                <div class="card-body">
+                <p class="card-text">
+                    {{info.content|safe}}
+                </p>
+                {% if info.file %}
+                <hr class="space m" />
+                <p><iframe width="100%" height="800px" src="{{info.file.url}}" type="application/pdf"></iframe></p>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>   
+</div>
+{% endblock %}
+
+
+{% block footer %}
+{% include "main/footer.html" with page=card %}
+{% endblock %}

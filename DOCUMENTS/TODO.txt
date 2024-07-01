@@ -1,0 +1,201 @@
+from tsnzv.models import Doc
+
+Doc.objects.all()
+docs = Doc.objects.all().filter(kat_id__slug='sobraniya')
+
+from tsnzv.models import Profile
+Profile.objects.all().delete()
+
+00000000
+пароль
+
+40706002
+fyAbHqw4
+
+
+40700101
+t4L4qRyt
+
+
+40708903
+NA3FtFqm
+
+
+
+username password
+
+=====================================================================
+@login_required()  # login_url="/users/login/"
+def lk_user(request):
+    data_user = get_object_or_404(User, ls=request.user.username)
+    device = MeterDev.objects.filter(kv=request.user.kv).all()
+    pokaz_dev = list(Pokazaniya.objects.filter(kv=request.user.kv).order_by("-date").values())
+    p = []
+    if pokaz_dev:
+        p = pokaz_dev[0]
+    # print(f"P:{p}")
+    # print(pokaz_dev[0]['hv'])
+    cur_time = datetime.datetime.now()
+
+    # переод при котором можно подавать показания пу
+    meter = False
+    if cur_time.day in settings.DAY_PERIOD:
+        meter = True
+
+    context = {
+        'title': "Личный кабинет",  # request.user.username,
+        'year': year,
+        'infos': infos,
+        'kat_doc': kat_doc,
+        'data_user': data_user,
+        'device': device,
+        'meter': meter,
+        'day_start': settings.DAY_PERIOD[0],
+        'day_end': settings.DAY_PERIOD[-1],
+        'pokaz_dev': p,
+
+    }
+    return render(request, 'users/lk.html', context=context)
+    # return HttpResponse(f"Личный кабинет")
+
+======================================================================
+
+
+
+
+
+
+
+
+
+для кастомного импорта csv файла для модели django
+models.py
+===
+сама модель
+и модель для импорта
+######################################################################
+class Pokazaniya(models.Model):
+    kv = models.IntegerField(verbose_name='Квартира')
+    hv = models.CharField(max_length=25, verbose_name='Холодная вода', blank=True)
+    gv = models.CharField(max_length=25, verbose_name='Горячая вода', blank=True)
+    e = models.CharField(max_length=25, verbose_name='Электричество', blank=True)
+    date = models.DateField(verbose_name='Дата показаний')
+
+    class Meta:
+        verbose_name = 'Показание счетчика'
+        verbose_name_plural = 'Показания счетчиков'
+
+    def __str__(self):
+        return str(self.kv)
+
+######################################################################
+class PokazaniyaImport(models.Model):
+    csv_file = models.FileField(upload_to='uploads/')
+    date_added = models.DateTimeField(auto_now_add=True)
+
+######################################################################
+===forms.py
+class PokazaniyaImportForm(ModelForm):
+    class Meta:
+        model = PokazaniyaImport
+        fields = ('csv_file',)
+=============
+===admin.py
+# отображает панель для модели PokazaniyaImport
+@admin.register(PokazaniyaImport)
+class PokazaniyaImportAdmin(admin.ModelAdmin):
+    list_display = ('csv_file', 'date_added')
+
+
+
+# отображает панель для модели Book и метод для импорта
+@admin.register(Pokazaniya)
+class PokazaniyaAdmin(admin.ModelAdmin):
+    list_display = ('kv','hv','gv','e','date',)
+
+    # даем django(urlpatterns) знать
+    # о существовании страницы с формой
+    # иначе будет ошибка
+    def get_urls(self):
+        urls = super().get_urls()
+        urls.insert(-1, path('csv-upload/', self.upload_csv))
+        return urls
+
+    # если пользователь открыл url 'csv-upload/'
+    # то он выполнит этот метод
+    # который работает с формой
+    def upload_csv(self, request):
+        if request.method == 'POST':
+            form = PokazaniyaImportForm(request.POST, request.FILES)
+            if form.is_valid():
+                # сохраняем загруженный файл и делаем запись в базу
+                form_object = form.save()
+                # обработка csv файла
+                with form_object.csv_file.open('r') as csv_file:
+                    rows = csv.reader(csv_file, delimiter=',')
+                    if next(rows) != ['kv', 'hv', 'gv', 'e', 'date']:
+                        # обновляем страницу пользователя
+                        # с информацией о какой-то ошибке
+                        messages.warning(request, 'Неверные заголовки у файла')
+                        return HttpResponseRedirect(request.path_info)
+                    for row in rows:
+        # ВСТАВИТЬ ПРОВЕРКУ НА ПРАВИЛЬНОМТЬ ДАННЫХ
+        #                 print(f"kv={row[0]};hv={row[1]};gv={row[2]};e={row[3]};date={row[4]}")
+                        # добавляем данные в базу
+                        try:
+                            Pokazaniya.objects.update_or_create(
+                                    kv=row[0],
+                                    hv=row[1],
+                                    gv=row[2],
+                                    e=row[3],
+                                    date=row[4]
+                                )
+                        except ValidationError as e:
+                            url = reverse('admin:index')
+                            messages.error(request, 'Ошибка, неверный формат файла')
+                            return HttpResponseRedirect(url)
+
+
+                # конец обработки файлы
+                # перенаправляем пользователя на главную страницу
+                # с сообщением об успехе
+                url = reverse('admin:index')
+                messages.success(request, 'Файл успешно импортирован')
+                return HttpResponseRedirect(url)
+        form = PokazaniyaImportForm()
+        return render(request, 'admin/csv_import_page.html', {'form': form})
+
+=======
+шаблоны
+путь
+app/templates/admin/csv_import_page.html
+***
+{% extends 'admin/base.html' %}
+
+{% block content %}
+    <div>
+        <form action="." method="POST" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit">Загрузка CSV</button>
+        </form>
+    </div>
+{% endblock %}
+***
+======
+шаблоны
+путь pokazaniya - модель
+app/templates/admin/pokazaniya/change_list.html
+***
+{% extends 'admin/change_list.html' %}
+{% load static %}
+
+{% block object-tools-items %}
+<li>
+    <a href="csv-upload/" class="addlink">
+      Импорт
+    </a>
+</li>
+{{ block.super }}
+{% endblock %}
+***
