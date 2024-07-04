@@ -19,7 +19,7 @@
                 <form action="{%url 'users:pokazaniya_write_ajax' %}" id="form_send_pokazaniya" method="post">
                      {% csrf_token %}
                     {{form_pokaz.kv}}
-                <small><u>(показания принимаются с {{day_start}} по {{day_end}} число)</u></small>
+                <small><u>(показания принимаются с 22 по 24 число)</u></small>
                 <table class="table-sm ">
                     <tr>
                         <td><b>ХВ</b>&nbsp;<img src="{% static 'main/img/meter-blue.svg' %}" height="50"

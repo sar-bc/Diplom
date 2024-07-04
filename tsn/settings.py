@@ -31,7 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 # дата показаний (начало/конец)
-DAY_PERIOD = [22, 23, 24]
+# DAY_PERIOD = [22, 23, 24]
 # Модель User
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/users/login/'

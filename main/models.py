@@ -161,7 +161,7 @@ class PokazaniyaUser(models.Model):
     hv = models.CharField(max_length=25, verbose_name='Холодная вода', blank=True)
     gv = models.CharField(max_length=25, verbose_name='Горячая вода', blank=True)
     e = models.CharField(max_length=25, verbose_name='Электричество', blank=True)
-    date = models.DateField(verbose_name='Дата показаний')
+    date = models.DateField(auto_now_add=True, verbose_name='Дата показаний')
 
     class Meta:
         verbose_name = 'Показание собственника'

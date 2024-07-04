@@ -19,7 +19,7 @@ from users.utils import check_email, send_email_for_verify
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.core.exceptions import ValidationError
-from main.models import MeterDev, Pokazaniya
+from main.models import MeterDev, Pokazaniya, PokazaniyaUser
 
 import datetime
 
@@ -86,9 +86,6 @@ def lk_user(request):
     p = []
     if pokaz_dev:
         p = pokaz_dev[0]
-    # print(f"P:{p}")
-    # print(pokaz_dev[0]['hv'])
-
 
     context = {
         'title': "Личный кабинет",  # request.user.username,
@@ -97,8 +94,8 @@ def lk_user(request):
         'kat_doc': kat_doc,
         'data_user': data_user,
         'device': device,
-        'day_start': settings.DAY_PERIOD[0],
-        'day_end': settings.DAY_PERIOD[-1],
+        # 'day_start': settings.DAY_PERIOD[0],
+        # 'day_end': settings.DAY_PERIOD[-1],
         'pokaz_dev': p,
         'form_pokaz': form_pokaz,
 
@@ -167,8 +164,9 @@ class EditRecDocAjax(View):
 
 ###############################################################
 def logout_user(request):
-    logout(request)
-    return redirect('home')
+    if request.method == "POST":
+        logout(request)
+        return redirect('home')
 
 
 #########################################################
@@ -253,14 +251,26 @@ class PokazaniyaWriteAjax(View):
     def post(self, request):
         # print(f"pokazwriteajax:")
         # запрашиваем последние показания
-        pokaz_dev = list(Pokazaniya.objects.filter(kv=request.user.kv).order_by("-date").values())
-        if pokaz_dev:
-            # p = pokaz_dev[0]
-            print(f"Последние ХВ:{pokaz_dev[0]['hv']}; ГВ:{pokaz_dev[0]['gv']}; Эл-во:{pokaz_dev[0]['e']}; ")
-            print(f"Переданные ХВ:{request.POST.get('hv')}; ГВ:{request.POST.get('gv')}; Эл-во:{request.POST.get('e')};")
-        # сравниваем что бы переданные были больше прудидущих
-
+        # pokaz_dev = list(Pokazaniya.objects.filter(kv=request.user.kv).order_by("-date").values())
+        # if pokaz_dev:
+        #     # p = pokaz_dev[0]
+        #     print(f"Последние ХВ:{pokaz_dev[0]['hv']}; ГВ:{pokaz_dev[0]['gv']}; Эл-во:{pokaz_dev[0]['e']}; ")
+        #     print(f"Переданные ХВ:{request.POST.get('hv')}; ГВ:{request.POST.get('gv')}; Эл-во:{request.POST.get('e')};")
+        # # сравниваем что бы переданные были больше прудидущих
+        now = datetime.datetime.now()
+        if PokazaniyaUser.objects.filter(date__month=now.month):
+            return JsonResponse(data={'status': 400, 'error': "В этом месяце вы уже передавали показания"}, status=200)
+        try:
+            PokazaniyaUser.objects.create(
+                kv=request.POST.get('kv'),
+                hv=request.POST.get('hv'),
+                gv=request.POST.get('gv'),
+                e=request.POST.get('e')
+            )
+            return JsonResponse(data={'status': 201, 'response': "Показания добавлены"}, status=200)
+        except ValueError:
+            return JsonResponse(data={'status': 400, 'error': "Ошибка"}, status=200)
 
         # return JsonResponse(data={'status': 201, 'response': "Показания добавлены"}, status=200)
-        return JsonResponse(data={'status': 400, 'error': "Ошибка"}, status=200)
+        # return JsonResponse(data={'status': 400, 'error': "Ошибка"}, status=200)
 #########################################################
