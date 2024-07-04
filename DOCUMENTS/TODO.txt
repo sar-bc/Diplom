@@ -67,6 +67,7 @@ def lk_user(request):
 
 
 
+https://fixmypc.ru/post/vypolniaem-import-csv-v-django-ispolzuia-admin-panel/#realizatsiia-csv-importa-cherez-storonnii-modul
 
 для кастомного импорта csv файла для модели django
 models.py
@@ -199,3 +200,25 @@ app/templates/admin/pokazaniya/change_list.html
 {{ block.super }}
 {% endblock %}
 ***
+
+
+
+
+
+@admin.register(MeterDev)
+class MeterDevAdmin(admin.ModelAdmin):
+    list_display = ('kv', 'name', 'number')
+
+    # даем django(urlpatterns) знать
+    # о существовании страницы с формой
+    # иначе будет ошибка
+    def get_urls(self):
+        urls = super().get_urls()
+        urls.insert(-1, path('csv-upload/', self.upload_csv))
+        return urls
+
+    # если пользователь открыл url 'csv-upload/'
+    # то он выполнит этот метод
+    # который работает с формой
+    def upload_csv(self, request):
+        ...

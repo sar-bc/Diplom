@@ -172,34 +172,34 @@ def logout_user(request):
 
 
 #########################################################
-def add_user(request):
-    # print(settings.BASE_DIR)
-    file_path = settings.BASE_DIR / 'uploads/upload_profile1.csv'
-    if file_path:
-        # print("yes file")
-        with open(file_path, 'r', encoding="utf-8") as file:
-            reader = csv.reader(file, delimiter=';')
-            for row in reader:
-                username, password, kv, ls, address, fio, sq = row
-                # print("username:",username)
-                # print("password:",password)
-                # print("kv:",kv)
-                # print("ls:",ls)
-                # print("address:",address)
-                # print("fio:",fio)
-                # print("sq:",sq)
-
-                if User.objects.filter(username=username):
-                    print("Такой user есть", username)
-                    continue
-                else:
-                    User.objects.create_user(username=username, password=password, kv=kv, ls=ls, address=address,
-                                             fio=fio, sq=sq)
-                    print("Saved", username)
-                    # new_user.save()
-    else:
-        print("no file")
-    return HttpResponse(f"upload")
+# def add_user(request):
+#     # print(settings.BASE_DIR)
+#     file_path = settings.BASE_DIR / 'uploads/upload_profile1.csv'
+#     if file_path:
+#         # print("yes file")
+#         with open(file_path, 'r', encoding="utf-8") as file:
+#             reader = csv.reader(file, delimiter=';')
+#             for row in reader:
+#                 username, password, kv, ls, address, fio, sq = row
+#                 # print("username:",username)
+#                 # print("password:",password)
+#                 # print("kv:",kv)
+#                 # print("ls:",ls)
+#                 # print("address:",address)
+#                 # print("fio:",fio)
+#                 # print("sq:",sq)
+#
+#                 if User.objects.filter(username=username):
+#                     print("Такой user есть", username)
+#                     continue
+#                 else:
+#                     User.objects.create_user(username=username, password=password, kv=kv, ls=ls, address=address,
+#                                              fio=fio, sq=sq)
+#                     print("Saved", username)
+#                     # new_user.save()
+#     else:
+#         print("no file")
+#     return HttpResponse(f"upload")
 
 
 #########################################################

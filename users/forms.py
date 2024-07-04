@@ -96,3 +96,6 @@ class ChangeForm(PasswordChangeForm):
             attrs={'class': 'form-control form-value ', 'autocomplete': 'new-password', 'autofocus': True})
     )
 
+
+class UserImportForm(forms.Form):
+    csv_file = forms.FileField()

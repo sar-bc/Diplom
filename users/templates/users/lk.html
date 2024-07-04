@@ -29,7 +29,7 @@
                             {% endif %}
 
                             {%for dev in device %}
-                            {% if "hv" in dev.type %}
+                            {% if "ХВ" in dev.type|upper %}
                             <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
                                 {{dev.data_pov_next}}</u></small>
                             {% endif %}
@@ -54,7 +54,7 @@
                             <small>(Счетчик № ------)<br><u>Дата след.поверки --.--.----</u></small>
                             {% endif %}
                             {%for dev in device %}
-                            {% if "gv" in dev.type %}
+                            {% if "ГВ" in dev.type|upper %}
                             <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
                                 {{dev.data_pov_next}}</u></small>
                             {% endif %}
@@ -79,7 +79,7 @@
                             <small>(Счетчик № ------)<br><u>Дата след.поверки --.--.----</u></small>
                             {% endif %}
                             {%for dev in device %}
-                            {% if "e" in dev.type %}
+                            {% if "Э" in dev.type|upper %}
                             <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
                                 {{dev.data_pov_next}}</u></small>
                             {% endif %}
