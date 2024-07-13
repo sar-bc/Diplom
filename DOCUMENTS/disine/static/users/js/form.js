@@ -186,40 +186,5 @@ $('#form_send_pokazaniya').submit(function(e){
 
 })
 //================================
-//form_zayavka_write
-$('#form_zayavka_write').submit(function(e){
-    e.preventDefault()
-    $.ajax({
-        type: this.method,
-        url: this.action,
-        data: $(this).serialize(),
-        dataType: 'json',
-        success : function(response){
-            console.log('ok - ', response)
-            if(response.status === 201){
-                // window.location.reload()
-                $('.ok_zayavka').text(response.response).removeClass('d-none')
-                setTimeout(function () {
-                    window.location.reload()
-                }, 3000);
-            }else if (response.status === 400) {
-                $('.error_zayavka').text(response.error).removeClass('d-none')
-                setTimeout(function () {
-                    // window.location.reload()
-                    $('.error_zayavka').addClass('d-none')
-                }, 3000);
-            }
-            
-
-        },
-        error: function (response) {
-            console.log('err - ', response)
-        }
-    })
-
-
-
-})
-//================================
 
 })//doc ready

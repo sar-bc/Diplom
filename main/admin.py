@@ -140,6 +140,14 @@ class PokazaniyaUserAdmin(ImportExportModelAdmin, ExportActionMixin, admin.Model
         model = PokazaniyaUser
         fields = ('kv', 'hv', 'gv', 'e', 'date',)
 ###########################################################
+@admin.register(Zayavki)
+class ZayavkiAdmin(admin.ModelAdmin):
+    list_display = ('user', 'status', 'created')
+    class Meta:
+        model = Zayavki
+        fields = '__all__'
+
+###########################################################
 admin.site.register(Doc, DocAdmin)
 admin.site.register(KatDoc, KatAdmin)
 admin.site.register(Info, InfoAdmin)

@@ -1,3 +1,6 @@
+from main.models import Zayavki
+Zayavki.objects.filter(user_id=1)
+====================
 from main.models import PokazaniyaUser
 import datetime
 now = datetime.datetime.now()

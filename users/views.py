@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from users.forms import *
-from main.forms import PokazaniyaForm
+from main.forms import PokazaniyaForm, ZayavkaForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
 from main.utils import infos, kat_doc, year
@@ -12,6 +12,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 import csv
 from django.contrib.auth import get_user_model
 from django.views import View
+from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse
 import re
@@ -19,8 +20,8 @@ from users.utils import check_email, send_email_for_verify
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.core.exceptions import ValidationError
-from main.models import MeterDev, Pokazaniya, PokazaniyaUser
-
+from main.models import MeterDev, Pokazaniya, PokazaniyaUser, Zayavki
+from django.db import IntegrityError
 import datetime
 
 User = get_user_model()
@@ -79,8 +80,10 @@ def profile(request):
 
 @login_required()  # login_url="/users/login/"
 def lk_user(request):
+    zayavki = Zayavki.objects.filter(user_id=request.user.id)
     data_user = get_object_or_404(User, ls=request.user.username)
     form_pokaz = PokazaniyaForm(data=data_user)
+    form_zayavka = ZayavkaForm(data=data_user)
     device = MeterDev.objects.filter(kv=request.user.kv).all()
     pokaz_dev = list(Pokazaniya.objects.filter(kv=request.user.kv).order_by("-date").values())
     p = []
@@ -94,17 +97,26 @@ def lk_user(request):
         'kat_doc': kat_doc,
         'data_user': data_user,
         'device': device,
-        # 'day_start': settings.DAY_PERIOD[0],
-        # 'day_end': settings.DAY_PERIOD[-1],
+        'zayavki': zayavki,
         'pokaz_dev': p,
         'form_pokaz': form_pokaz,
-
-
+        'form_zayavka': form_zayavka,
     }
     return render(request, 'users/lk.html', context=context)
     # return HttpResponse(f"Личный кабинет")
 
 
+###############################################################
+def show_zayavka(request, id):
+    zayavka = Zayavki.objects.filter(user_id=request.user.id).get(id=id)
+    context = {
+        'title': "Личный кабинет",  # request.user.username,
+        'year': year,
+        'infos': infos,
+        'kat_doc': kat_doc,
+        'zayavka': zayavka
+    }
+    return render(request, 'users/show_zayavka.html', context)
 ###############################################################
 class ChangePasswordAjax(View):
     model = User
@@ -170,60 +182,32 @@ def logout_user(request):
 
 
 #########################################################
-# def add_user(request):
-#     # print(settings.BASE_DIR)
-#     file_path = settings.BASE_DIR / 'uploads/upload_profile1.csv'
-#     if file_path:
-#         # print("yes file")
-#         with open(file_path, 'r', encoding="utf-8") as file:
-#             reader = csv.reader(file, delimiter=';')
-#             for row in reader:
-#                 username, password, kv, ls, address, fio, sq = row
-#                 # print("username:",username)
-#                 # print("password:",password)
-#                 # print("kv:",kv)
-#                 # print("ls:",ls)
-#                 # print("address:",address)
-#                 # print("fio:",fio)
-#                 # print("sq:",sq)
-#
-#                 if User.objects.filter(username=username):
-#                     print("Такой user есть", username)
-#                     continue
-#                 else:
-#                     User.objects.create_user(username=username, password=password, kv=kv, ls=ls, address=address,
-#                                              fio=fio, sq=sq)
-#                     print("Saved", username)
-#                     # new_user.save()
-#     else:
-#         print("no file")
-#     return HttpResponse(f"upload")
-
-
+@login_required
+def deletezayavka(request, pk):
+    zayavka = get_object_or_404(Zayavki, pk=pk, user=request.user)
+    if request.method == "POST":
+        zayavka.delete()
+        return redirect('users:lk_user')
 #########################################################
-# def add_pokazaniya(request):
-#     # print(settings.BASE_DIR)
-#     file_path = settings.BASE_DIR / 'uploads/pokazaniya02.24.csv'
-#     if file_path:
-#         # print("yes file")
-#         with open(file_path, 'r') as file:
-#             reader = csv.reader(file, delimiter=';')
-#             for row in reader:
-#                 kv, hv, gv, e, date = row
-#
-#                 if Pokazaniya.objects.filter(date=date, kv=kv):
-#                     print("Такая запись есть ")
-#                     continue
-#                 else:
-#                     Pokazaniya.objects.create(kv=kv, hv=hv, gv=gv, e=e, date=date)
-#
-#                     print("Saved", kv)
-#                     # new_user.save()
-#     else:
-#         print("no file")
-#     return HttpResponse(f"upload")
-
-
+class ZayavkaWriteAjax(View):
+    def post(self, request):
+        reg = "^[+]{1}7 [(]{1}[0-9]{3}[)]{1} [0-9]{3} [0-9]{4}$"
+        check_num = re.search(reg, request.POST.get('phone'))
+        if check_num is None:
+            return JsonResponse(data={'status': 400, 'error': "Проверьте правильность номера"}, status=200)
+        if len(request.POST.get('description')) < 5:
+            return JsonResponse(data={'status': 400, 'error': 'Поле описание менее 5 символов'}, status=200)
+        try:
+            Zayavki.objects.create(user=request.user, description=request.POST.get('description'),
+                                   phone=request.POST.get('phone'))
+            # send email admin
+            mess = ("Новое сообщение от " + request.user.username + "; Тел: " + request.POST.get('phone') +
+                    "; Сообщение: " + request.POST.get('description'))
+            send_mail('Уведомление с сайта ТСН', mess, settings.EMAIL_HOST_USER,
+                      [settings.EMAIL_FROM_ADMIN, settings.EMAIL_FROM_CLIENT], fail_silently=False, )
+        except IntegrityError:
+            return JsonResponse(data={'status': 400, 'error': "Ошибка"}, status=200)
+        return JsonResponse(data={'status': 201, 'response': "Заявка успешно отправлена"}, status=200)
 #########################################################
 class EmailVerify(View):
     def get(self, request, uidb64, token):
@@ -249,14 +233,7 @@ class EmailVerify(View):
 #########################################################
 class PokazaniyaWriteAjax(View):
     def post(self, request):
-        # print(f"pokazwriteajax:")
-        # запрашиваем последние показания
-        # pokaz_dev = list(Pokazaniya.objects.filter(kv=request.user.kv).order_by("-date").values())
-        # if pokaz_dev:
-        #     # p = pokaz_dev[0]
-        #     print(f"Последние ХВ:{pokaz_dev[0]['hv']}; ГВ:{pokaz_dev[0]['gv']}; Эл-во:{pokaz_dev[0]['e']}; ")
-        #     print(f"Переданные ХВ:{request.POST.get('hv')}; ГВ:{request.POST.get('gv')}; Эл-во:{request.POST.get('e')};")
-        # # сравниваем что бы переданные были больше прудидущих
+
         now = datetime.datetime.now()
         if PokazaniyaUser.objects.filter(date__month=now.month):
             return JsonResponse(data={'status': 400, 'error': "В этом месяце вы уже передавали показания"}, status=200)

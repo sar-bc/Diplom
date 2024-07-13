@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 ######################################################################
 class UserMessage(models.Model):
@@ -169,5 +171,24 @@ class PokazaniyaUser(models.Model):
 
     def __str__(self):
         return str(self.kv)
+######################################################################
+class Zayavki(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    description = models.TextField(verbose_name="Описание")
+    phone = models.CharField(max_length=17, verbose_name='Телефон', blank=True)
+    created = models.DateTimeField(auto_now_add=True, verbose_name="Дата заявки")
+    date_completed = models.DateTimeField(blank=True, null=True, verbose_name="Дата выполнения")
+    TYPE_SELECT = (
+        ('0', 'Выполнено'),
+        ('1', 'В работе'),
+        ('2', 'Ожидание'),
+    )
+    status = models.CharField(max_length=3, default='2', choices=TYPE_SELECT, verbose_name='Статус', blank=True)
+    class Meta:
+        verbose_name = 'Заявку от собственника'
+        verbose_name_plural = 'Заявки от собственников'
+
+    def __str__(self):
+        return f"Заявка от {self.user.username}"
 ######################################################################
 

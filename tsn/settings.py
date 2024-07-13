@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-ip5001#^#=sc55u#lixc_6lrkg4^rkb@i4865retj(-jq5ionm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
 # дата показаний (начало/конец)
 # DAY_PERIOD = [22, 23, 24]
 # Модель User
@@ -38,7 +38,7 @@ LOGIN_URL = '/users/login/'
 
 
 INTERNAL_IPS = [
-    '127.0.0.1',
+    '127.0.0.1'
 ]
 # Application definition
 

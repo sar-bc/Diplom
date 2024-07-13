@@ -1,6 +1,6 @@
 from multiprocessing import AuthenticationError
 from django import forms
-from .models import UserMessage
+from .models import UserMessage, Zayavki
 from captcha.fields import CaptchaField
 from django.forms import ModelForm
 from main.models import PokazaniyaUser
@@ -54,3 +54,27 @@ class PokazaniyaForm(forms.ModelForm):
     class Meta:
         model = PokazaniyaUser
         fields = ['kv', 'hv', 'gv', 'e']
+
+# Форма передачи заявки
+class ZayavkaForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        data = kwargs.pop('data', None)
+        super(ZayavkaForm, self).__init__(*args, **kwargs)
+        if data:
+            self.fields['ls'] = forms.IntegerField(
+                widget=forms.NumberInput(attrs={'type': 'hidden', 'name': 'ls', 'value': data.ls})
+            )
+
+    description = forms.CharField(label="Описание",
+                                  widget=forms.Textarea(
+                                      attrs={"class": "form-control form-value", "placeholder": "Коротко, что у вас случилось",
+                                            'cols': 20, 'rows': 4}
+                                  ))
+    phone = forms.CharField(label="Телефон",
+                            widget=forms.TextInput(
+                                attrs={'type': 'tel', 'placeholder': '+7 (999) 111 3333', 'id': 'online_phone', 'class': 'form-control',
+                       'pattern': '[+]{1}7 [(]{1}[0-9]{3}[)]{1} [0-9]{3} [0-9]{4}'}
+                            ))
+    class Meta:
+        model = Zayavki
+        fields = ['description', 'phone']

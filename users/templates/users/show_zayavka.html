@@ -1,0 +1,40 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<!--CONTENT-->
+<div class="container">
+    <h3>Заявка # {{zayavka.id}} от {{zayavka.created|date:"d.m.y"}}</h3>
+    <div class="row">
+        <div class="col">
+            <b>Описание:</b>
+            {{zayavka.description}}
+        </div><!--col-->
+    </div><!--row-->
+    <div class="row">
+        <div class="col">
+            <b>Статус:</b>
+            {% if zayavka.status == '2' %}
+                        Ожидание
+                        {% elif zayavka.status == '1' %}
+                        В работе
+                        {% elif zayavka.status == '0' %}
+                        Выполнено
+                        {% endif %}
+        </div><!--col-->
+    </div><!--row-->
+    <div class="row">
+        <div class="col m-2 d-flex">
+             <a class="btn btn-sm btn-dark" href="{% url 'users:lk_user' %}">Назад</a>
+            <form action="{% url 'users:delete_zayavka' zayavka.id %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-sm btn-danger">Удалить</button>
+    </form>
+        </div><!--col-->
+
+    </div><!--row-->
+</div>
+<!--CONTENT END-->
+
+{% endblock content %}

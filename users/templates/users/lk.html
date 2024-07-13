@@ -17,157 +17,235 @@
                 <div class="alert alert-danger d-none error_pokaz" role="alert"></div>
                 <div class="alert alert-success d-none ok_pokaz" role="alert"></div>
                 <form action="{%url 'users:pokazaniya_write_ajax' %}" id="form_send_pokazaniya" method="post">
-                     {% csrf_token %}
+                    {% csrf_token %}
                     {{form_pokaz.kv}}
-                <small><u>(показания принимаются с 22 по 24 число)</u></small>
-                <table class="table-sm ">
-                    <tr>
-                        <td><b>ХВ</b>&nbsp;<img src="{% static 'main/img/meter-blue.svg' %}" height="50"
-                                                width="50"><br>
-                            {% if not device %}
-                            <small>(Счетчик № ------)<br><u>Дата след.поверки --.--.----</u></small>
-                            {% endif %}
+                    <small><u>(показания принимаются с 22 по 24 число)</u></small>
+                    <table class="table-sm ">
+                        <tr>
+                            <td><b>ХВ</b>&nbsp;<img src="{% static 'main/img/meter-blue.svg' %}" height="50"
+                                                    width="50"><br>
+                                {% if not device %}
+                                <small>(Счетчик № ------)<br><u>Дата след.поверки --.--.----</u></small>
+                                {% endif %}
 
-                            {%for dev in device %}
-                            {% if "ХВ" in dev.type|upper %}
-                            <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
-                                {{dev.data_pov_next}}</u></small>
-                            {% endif %}
-                            {% endfor %}
-                        </td>
+                                {%for dev in device %}
+                                {% if "ХВ" in dev.type|upper %}
+                                <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
+                                    {{dev.data_pov_next}}</u></small>
+                                {% endif %}
+                                {% endfor %}
+                            </td>
 
-                    </tr>
-                    <tr>
-                        <td><small>Последние показания <i><u>({{pokaz_dev.date}})</u></i>: <b>{{pokaz_dev.hv}}</b></small></td>
-                    </tr>
-                    <tr>
-                        <td><small><span
-                                style="font-size: 12px;"><i>Вводите показания целым числом</i></span></small><br>
-                            {{form_pokaz.hv}}
-                        </td>
+                        </tr>
+                        <tr>
+                            <td><small>Последние показания <i><u>({{pokaz_dev.date}})</u></i>:
+                                <b>{{pokaz_dev.hv}}</b></small></td>
+                        </tr>
+                        <tr>
+                            <td><small><span
+                                    style="font-size: 12px;"><i>Вводите показания целым числом</i></span></small><br>
+                                {{form_pokaz.hv}}
+                            </td>
 
-                    </tr>
-                    <tr>
-                        <td><b>ГВ</b>&nbsp;<img src="{% static 'main/img/meter-water-hot.svg' %}" height="50"
-                                                width="50"><br>
-                            {% if not device %}
-                            <small>(Счетчик № ------)<br><u>Дата след.поверки --.--.----</u></small>
-                            {% endif %}
-                            {%for dev in device %}
-                            {% if "ГВ" in dev.type|upper %}
-                            <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
-                                {{dev.data_pov_next}}</u></small>
-                            {% endif %}
-                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <td><b>ГВ</b>&nbsp;<img src="{% static 'main/img/meter-water-hot.svg' %}" height="50"
+                                                    width="50"><br>
+                                {% if not device %}
+                                <small>(Счетчик № ------)<br><u>Дата след.поверки --.--.----</u></small>
+                                {% endif %}
+                                {%for dev in device %}
+                                {% if "ГВ" in dev.type|upper %}
+                                <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
+                                    {{dev.data_pov_next}}</u></small>
+                                {% endif %}
+                                {% endfor %}
 
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td><small>Последние показания <i><u>({{pokaz_dev.date}})</u></i>: <b>{{pokaz_dev.gv}}</b></small></td>
-                    </tr>
-                    <tr>
-                        <td><small><span
-                                style="font-size: 12px;"><i>Вводите показания целым числом</i></span></small><br>
-                        {{form_pokaz.gv}}</td>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><small>Последние показания <i><u>({{pokaz_dev.date}})</u></i>:
+                                <b>{{pokaz_dev.gv}}</b></small></td>
+                        </tr>
+                        <tr>
+                            <td><small><span
+                                    style="font-size: 12px;"><i>Вводите показания целым числом</i></span></small><br>
+                                {{form_pokaz.gv}}
+                            </td>
 
-                    </tr>
-                    <tr>
-                        <td><b>Электричество</b>&nbsp;<img src="{% static 'main/img/electric-meter.svg' %}" height="50"
-                                                           width="50"><br>
-                            {% if not device %}
-                            <small>(Счетчик № ------)<br><u>Дата след.поверки --.--.----</u></small>
-                            {% endif %}
-                            {%for dev in device %}
-                            {% if "Э" in dev.type|upper %}
-                            <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
-                                {{dev.data_pov_next}}</u></small>
-                            {% endif %}
-                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <td><b>Электричество</b>&nbsp;<img src="{% static 'main/img/electric-meter.svg' %}"
+                                                               height="50"
+                                                               width="50"><br>
+                                {% if not device %}
+                                <small>(Счетчик № ------)<br><u>Дата след.поверки --.--.----</u></small>
+                                {% endif %}
+                                {%for dev in device %}
+                                {% if "Э" in dev.type|upper %}
+                                <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
+                                    {{dev.data_pov_next}}</u></small>
+                                {% endif %}
+                                {% endfor %}
 
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td><small>Последние показания <i><u>({{pokaz_dev.date}})</u></i>: <b>{{pokaz_dev.e}}</b></small></td>
-                    </tr>
-                    <tr>
-                        <td><small><span
-                                style="font-size: 12px;"><i>Вводите показания целым числом</i></span></small><br>
-                        {{form_pokaz.e}}</td>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><small>Последние показания <i><u>({{pokaz_dev.date}})</u></i>:
+                                <b>{{pokaz_dev.e}}</b></small></td>
+                        </tr>
+                        <tr>
+                            <td><small><span
+                                    style="font-size: 12px;"><i>Вводите показания целым числом</i></span></small><br>
+                                {{form_pokaz.e}}
+                            </td>
 
-                    </tr>
-                </table>
-                <div class=" my-2">
-                    <input type="submit" class="btn btn-card" value="Передать">
-                    </form>
-                </div>
-            </div><!--div-->
-        </div><!--col-->
-        <div class="col-md-6 col-sm-12 my-1">
-            <div class="container-cont">
-                <div class="title">Заявки</div>
-                <div class="form-error"></div>
-                <p><input type="text" placeholder="Ваше имя"
-                          class="form-control form-value text-box single-line" value="{{data_user.fio}}"></p>
-                <!-- <p><input type="tel" placeholder="Телефон"
-                        class="form-control form-value text-box single-line"></p> -->
-                <p><input id="online_phone" name="phone" type="tel" maxlength="50"
-                          required="required"
-                          value="{{data_user.phone}}"
-                          pattern="[+]{1}7 [(]{1}[0-9]{3}[)]{1} [0-9]{3} [0-9]{4}"
-                          placeholder="+7 (999) 111 3333"></p>
-                <textarea placeholder="Сообщение" cols="20" rows="4"
-                          class="form-control form-value"></textarea>
-                <p class="my-2">
-                    <button type="submit" class="btn btn-card ">Отправить сообщение</button>
-                </p>
-            </div><!--cont-->
-
-        </div><!--col-->
-    </div><!--row-->
-    <div class="row">
-        <div class="col-md-6 col-sm-12 my-1 ">
-
-            <div class="container-cont">
-                <div class="title">Платежки</div>
-                <table class="table-sm">
-                    <tr>
-                        <td>Месяц</td>
-                        <td>Год</td>
-                    </tr>
-
-                    <tr>
-                        <td><select>
-                            <option>Январь</option>
-                            <option>Февраль</option>
-                            <option>Март</option>
-                            <option>Апрель</option>
-                            <option>Май</option>
-                            <option>Июнь</option>
-                            <option>Июль</option>
-                            <option>Август</option>
-                            <option>Сентябрь</option>
-                            <option>Октябрь</option>
-                            <option>Ноябрь</option>
-                            <option>Декабрь</option>
-                        </select></td>
-                        <td><select>
-                            <option>2024</option>
-                        </select>
-
-                        </td>
-                        <td>
-                            <button type="submit" class="btn btn-card ">Просмотреть</button>
-                        </td>
-                    </tr>
-                </table>
-
+                        </tr>
+                    </table>
+                    <div class=" my-2">
+                        <input type="submit" class="btn btn-card" value="Передать">
+                </form>
             </div>
+        </div><!--div-->
+    </div><!--col-->
+    <div class="col-md-6 col-sm-12 my-1">
+        <div class="container-cont">
+            <div class="title_1">Заявки <a href="#" data-bs-toggle="modal" data-bs-target="#zayavkaModal"
+                                           class="btn btn-sm btn-card">
+                Добавить
+            </a></div>
+            <div class="form-error"></div>
+            <table class="table-sm ">
+                <thead>
+                <tr>
+                    <th><small>#</small></th>
+                    <th><small>Дата</small></th>
+
+                    <th><small>Статус</small></th>
+                    <th><small>Действия</small></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for z in zayavki %}
+                <tr>
+                    <td><small>{{z.id}}</small></td>
+                    <td><small>{{z.created|date:"d.m.y"}}</small></td>
+
+                    <td><small>
+                        {% if z.status == '2' %}
+                        Ожидание
+                        {% elif z.status == '1' %}
+                        В работе
+                        {% elif z.status == '0' %}
+                        Выполнено
+                        {% endif %}
+                    </small></td>
+                    <td><small>
+                        <a class="btn btn-sm btn-dark" href="{% url 'users:show_zayavka' z.id %}">Подробнее</a>
+                    </small></td>
+                </tr>
+                {% endfor%}
+                </tbody>
+            </table>
+        </div><!--cont-->
+
+    </div><!--col-->
+</div><!--row-->
+<div class="row">
+    <div class="col-md-6 col-sm-12 my-1 ">
+
+        <div class="container-cont">
+            <div class="title">Платежки</div>
+            <table class="table-sm">
+                <tr>
+                    <td>Месяц</td>
+                    <td>Год</td>
+                </tr>
+
+                <tr>
+                    <td><select>
+                        <option>Январь</option>
+                        <option>Февраль</option>
+                        <option>Март</option>
+                        <option>Апрель</option>
+                        <option>Май</option>
+                        <option>Июнь</option>
+                        <option>Июль</option>
+                        <option>Август</option>
+                        <option>Сентябрь</option>
+                        <option>Октябрь</option>
+                        <option>Ноябрь</option>
+                        <option>Декабрь</option>
+                    </select></td>
+                    <td><select>
+                        <option>2024</option>
+                    </select>
+
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-card ">Просмотреть</button>
+                    </td>
+                </tr>
+            </table>
 
         </div>
-    </div><!--row-->
+
+    </div>
+</div><!--row-->
 </div>
+<!--MODAL WINDOW-->
+
+<!--MODAL WINDOW END-->
+<!-- zayavkaModal -->
+<div class="modal fade" id="zayavkaModal" tabindex="-1" aria-labelledby="zayavkaModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="zayavkaModalLabel">Подача заявки</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <form action="{% url 'users:zayavka_write_ajax'%}" method="POST" id="form_zayavka_write">
+                {%csrf_token%}
+            <div class="modal-body">
+                <div class="alert alert-danger d-none error_zayavka" role="alert"></div>
+                <div class="alert alert-success d-none ok_zayavka" role="alert"></div>
+                <div class="row">
+                    <div class="col">
+                        <span style="color: gray;">{{form_zayavka.description.label}}</span>
+                    </div><!--col-->
+                </div><!--row-->
+                <div class="row">
+                    <div class="col">
+
+                        {{form_zayavka.description}}
+                    </div><!--col-->
+                </div><!--row-->
+                <div class="row">
+                    <div class="col">
+                        <span style="color: gray;">{{form_zayavka.phone.label}}</span>
+                    </div><!--col-->
+                </div><!--row-->
+                <div class="row">
+                    <div class="col">
+
+                        {{form_zayavka.phone}}
+                    </div><!--col-->
+                </div><!--row-->
+
+            </div><!--modal-body-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" class="btn btn-card">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- zayavkaModal END-->
 <!--CONTENT END-->
 
 {% endblock content %}    

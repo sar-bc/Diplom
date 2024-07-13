@@ -10,6 +10,8 @@ urlpatterns = [
     path('logout/', views.logout_user, name='logout'),
     path('profile/', views.profile, name='profile'),
     path('lk/', views.lk_user, name='lk_user'),
+    path('show_zayavka/<int:id>/', views.show_zayavka, name='show_zayavka'),
+    path('delete_zayavka/<int:pk>/', views.deletezayavka, name='delete_zayavka'),
     # path('add_users/', views.add_user, name='add_users'),
     # path('add_pokazaniya/', views.add_pokazaniya, name='add_pokazaniya'),
     path('edit_phone_ajax/', views.EditPhoneAjax.as_view(), name='edit_phone_ajax'),
@@ -19,4 +21,5 @@ urlpatterns = [
     path('verify_email/<uidb64>/<token>/', views.EmailVerify.as_view(), name='verify_email'),
     path('invalid_verify/', TemplateView.as_view(template_name='users/invalid_verify.html'), name='invalid_verify'),
     path('pokazaniya_write_ajax/', views.PokazaniyaWriteAjax.as_view(), name='pokazaniya_write_ajax'),
+    path('zayavka_write_ajax/', views.ZayavkaWriteAjax.as_view(), name='zayavka_write_ajax'),
 ]
