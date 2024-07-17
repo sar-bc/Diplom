@@ -4,7 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.forms import PasswordChangeForm
-
+import datetime
 from django.forms import ModelForm
 
 
@@ -99,3 +99,14 @@ class ChangeForm(PasswordChangeForm):
 
 class UserImportForm(forms.Form):
     csv_file = forms.FileField()
+
+
+class ReceiptsImportForm(forms.Form):
+    date = forms.DateField(label="Выбирите месяц и год",
+                           initial=datetime.date.today,
+                           widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date", 'class': 'datepicker'}),
+                           input_formats=["%Y-%m-%d"])
+    # year = forms.CharField(label="Год",
+    #                        initial=datetime.date.year,
+    #                        widget=forms.NumberInput())
+    pdf_file = forms.FileField(label="PDF файл с платежками")

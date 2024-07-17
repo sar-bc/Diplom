@@ -1,3 +1,6 @@
+from users.models import Receipts
+Receipts.objects.create(kv=1,date='2024-06-25',file='receipts/2024/06/1.pdf')
+==================================
 from main.models import Zayavki
 Zayavki.objects.filter(user_id=1)
 ====================

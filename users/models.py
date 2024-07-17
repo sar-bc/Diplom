@@ -19,9 +19,19 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Пользователи'
         verbose_name_plural = 'Пользователи'
-
+        ordering = ['kv']
 
 ######################################################################
+class Receipts(models.Model):
+    kv = models.IntegerField(verbose_name="Квартира")
+    date = models.DateField(verbose_name='Закакой месяц')
+    file = models.FileField(upload_to="receipts/", verbose_name="Квитанция")
+    show = models.IntegerField(verbose_name="Кол-во скачиваний", default=0)
 
+    class Meta:
+        verbose_name = 'Квитанции'
+        verbose_name_plural = 'Квитанции'
+        ordering = ['kv']
+######################################################################
 
 ######################################################################

@@ -192,3 +192,4 @@ class Zayavki(models.Model):
         return f"Заявка от {self.user.username}"
 ######################################################################
 
+
