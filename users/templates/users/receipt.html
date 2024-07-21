@@ -1,0 +1,25 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<!--CONTENT-->
+<div class="container">
+    <h3>Платежный документ</h3>
+    {% if kvitan %}
+    <h4>от {{kvitan.date}}</h4>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-sm btn-dark" href="{% url 'users:lk_user' %}">Назад</a>
+            <iframe width="100%" height="800px" src="{{kvitan.file.url}}" type="application/pdf"></iframe>
+        </div><!--col-->
+    </div><!--row-->
+    {% else %}
+    <div class="alert alert-danger text-center" role="alert">
+        Документа нет в базе, обратитесь в офис ТСН
+    </div><!--alert-->
+     <a class="btn btn-sm btn-dark m-2" href="{% url 'users:lk_user' %}">Назад</a>
+    {% endif %}
+</div><!--contaier-->
+<!--CONTENT END-->
+{% endblock content %}

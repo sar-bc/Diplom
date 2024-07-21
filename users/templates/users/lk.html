@@ -158,6 +158,8 @@
 
         <div class="container-cont">
             <div class="title">Платежки</div>
+            <form action="{%url 'users:receipt' %}" method="post">
+                {% csrf_token%}
             <table class="table-sm">
                 <tr>
                     <td>Месяц</td>
@@ -165,23 +167,13 @@
                 </tr>
 
                 <tr>
-                    <td><select>
-                        <option>Январь</option>
-                        <option>Февраль</option>
-                        <option>Март</option>
-                        <option>Апрель</option>
-                        <option>Май</option>
-                        <option>Июнь</option>
-                        <option>Июль</option>
-                        <option>Август</option>
-                        <option>Сентябрь</option>
-                        <option>Октябрь</option>
-                        <option>Ноябрь</option>
-                        <option>Декабрь</option>
-                    </select></td>
-                    <td><select>
-                        <option>2024</option>
-                    </select>
+                    <td>
+                        <!--месяц-->
+                        {{form_receipt.month}}
+                    </td>
+                    <td>
+                        <!--Год-->
+                        {{form_receipt.year}}
 
                     </td>
                     <td>
@@ -189,6 +181,7 @@
                     </td>
                 </tr>
             </table>
+                </form>
 
         </div>
 

@@ -23,6 +23,7 @@ from django.core.exceptions import ValidationError
 from main.models import MeterDev, Pokazaniya, PokazaniyaUser, Zayavki
 from django.db import IntegrityError
 import datetime
+from .models import Receipts
 
 User = get_user_model()
 
@@ -84,6 +85,7 @@ def lk_user(request):
     data_user = get_object_or_404(User, ls=request.user.username)
     form_pokaz = PokazaniyaForm(data=data_user)
     form_zayavka = ZayavkaForm(data=data_user)
+    form_receipt = Lk_receiptForm()
     device = MeterDev.objects.filter(kv=request.user.kv).all()
     pokaz_dev = list(Pokazaniya.objects.filter(kv=request.user.kv).order_by("-date").values())
     p = []
@@ -101,6 +103,7 @@ def lk_user(request):
         'pokaz_dev': p,
         'form_pokaz': form_pokaz,
         'form_zayavka': form_zayavka,
+        'form_receipt': form_receipt,
     }
     return render(request, 'users/lk.html', context=context)
     # return HttpResponse(f"Личный кабинет")
@@ -250,4 +253,21 @@ class PokazaniyaWriteAjax(View):
 
         # return JsonResponse(data={'status': 201, 'response': "Показания добавлены"}, status=200)
         # return JsonResponse(data={'status': 400, 'error': "Ошибка"}, status=200)
+#########################################################
+def receipt(request):
+    try:
+        kvitan = Receipts.objects.filter(date__month=request.POST['month'], date__year=request.POST[
+        'year']).get(ls=request.user.ls)
+    except Receipts.DoesNotExist:
+        kvitan = None
+
+    context = {
+        'title': "Платежный документ",  # request.user.username,
+        'year': year,
+        'infos': infos,
+        'kat_doc': kat_doc,
+        'kvitan': kvitan,
+
+    }
+    return render(request, 'users/receipt.html', context)
 #########################################################

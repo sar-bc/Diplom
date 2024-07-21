@@ -5,25 +5,40 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 # обслуживание импорта
 import csv
-from .forms import UserImportForm, ReceiptsImportForm
+from .forms import UserImportForm, ReceiptsImportForm, UserCreationForm
 from django.urls import path
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
 import os
+from django import forms
+from django.contrib.auth.admin import UserAdmin
+
 User = get_user_model()
 from .models import Receipts
 import PyPDF2
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+
+
+# https://docs.djangoproject.com/en/1.8/topics/auth/customizing/#a-full-example
+
+
+class UserAdmin(UserAdmin):  # admin.ModelAdmin
+    add_form = UserCreationForm  # CustomUserCreationForm
     search_fields = ["username"]
     # list_editable = ('is_active',)
     list_display = ('username', 'kv')
+    fieldsets = (
+        (None, {"fields": ("username", "password")}),
+        (("Персональная информация"), {"fields": ("fio", "address", "email", "phone", "ls", "kv", "sq")}),
+        (
+            ("Разрешения"), {"fields": ("is_active", "is_staff", "is_superuser",)}
+        ),
+    )
 
     class Meta:
         model = User
-        fields = ('username', 'password')
+        fields = ('username', 'password', 'ls', 'kv', 'fio', 'address', 'sq', 'phone')
 
     def __str__(self):
         return str(self.username)
@@ -53,6 +68,10 @@ class UserAdmin(admin.ModelAdmin):
                 return HttpResponseRedirect(url)
         form = UserImportForm()
         return render(request, 'admin/csv_import_page.html', {'form': form})
+
+
+# admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 
 
 def uploaded_file(request, file):
@@ -90,17 +109,20 @@ def uploaded_file(request, file):
                 return HttpResponseRedirect(url)
         # удаляем файл
         os.remove(f"{settings.MEDIA_ROOT}/uploads/{file}")
+
+
 #####################################################################################
 @admin.register(Receipts)
 class ReceiptsAdmin(admin.ModelAdmin):
-    list_display = ('kv', 'date', 'file', 'show')
-    search_fields = ["kv", "date"]
-    list_filter = ['kv', 'date']
+    list_display = ('ls', 'date', 'file')
+    search_fields = ["ls", "date"]
+    list_filter = ['date']
+
     class Meta:
         model = Receipts
 
     def __str__(self):
-        return str(self.kv)
+        return str(self.ls)
 
         # даем django(urlpatterns) знать
         # о существовании страницы с формой
@@ -123,7 +145,7 @@ class ReceiptsAdmin(admin.ModelAdmin):
                 # перенаправляем пользователя на главную страницу
                 # с сообщением об успехе
                 url = reverse('admin:index')
-                messages.success(request, 'Файл успешно импортирован')
+                # messages.success(request, 'Файл успешно импортирован')
                 return HttpResponseRedirect(url)
         form = ReceiptsImportForm()
         return render(request, 'admin/pdf_import_page.html', {'form': form})
@@ -133,34 +155,54 @@ class ReceiptsAdmin(admin.ModelAdmin):
 def uploaded_file_pdf(request, file):
     year = request.POST.get('date')[:4]
     month = request.POST.get('date')[5:7]
+    # print(f"file:{file}")
+    if str(file).endswith('.pdf'):
 
-    # обработка pdf файла загрузка в папку uploads
-    with open(f"{settings.MEDIA_ROOT}/uploads/{file}", "wb+") as destination:
-        for chunk in file.chunks():
-            destination.write(chunk)
+        # обработка pdf файла загрузка в папку uploads
+        with open(f"{settings.MEDIA_ROOT}/uploads/{file}", "wb+") as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
 
-    # Открываем PDF файл
-    with open(f"{settings.MEDIA_ROOT}/uploads/{file}", 'rb') as file:
-        # Создаем объект PDF Reader
-        pdf_reader = PyPDF2.PdfReader(file)
-        # Получаем количество страниц в PDF файле
-        num_pages = len(pdf_reader.pages)
-        if not os.path.exists(f"{settings.MEDIA_ROOT}/receipts"):
-            os.makedirs(f"{settings.MEDIA_ROOT}/receipts")
-        if not os.path.exists(f"{settings.MEDIA_ROOT}/receipts/{year}"):
-            os.makedirs(f"{settings.MEDIA_ROOT}/receipts/{year}")
-        if not os.path.exists(f"{settings.MEDIA_ROOT}/receipts/{year}/{month}"):
-            os.makedirs(f"{settings.MEDIA_ROOT}/receipts/{year}/{month}")
+        # Открываем PDF файл
+        with open(f"{settings.MEDIA_ROOT}/uploads/{file}", 'rb') as file:
+            # Создаем объект PDF Reader
+            pdf_reader = PyPDF2.PdfReader(file)
+            # Получаем количество страниц в PDF файле
+            num_pages = len(pdf_reader.pages)
+            # num_kv = Receipts.objects.filter(kv__gt=0).count()
+            # print(f"num_kv:{num_kv}")
+            ls = []
+            kv = User.objects.filter(kv__gt=0)
+            for ls_lst in kv:
+                ls.append(ls_lst.ls)
+            if len(ls) == num_pages:
+                # кол-во лицевых совподает с кол-вом страниц в файле pdf
+                if not os.path.exists(f"{settings.MEDIA_ROOT}/receipts"):
+                    os.makedirs(f"{settings.MEDIA_ROOT}/receipts")
+                if not os.path.exists(f"{settings.MEDIA_ROOT}/receipts/{year}"):
+                    os.makedirs(f"{settings.MEDIA_ROOT}/receipts/{year}")
+                if not os.path.exists(f"{settings.MEDIA_ROOT}/receipts/{year}/{month}"):
+                    os.makedirs(f"{settings.MEDIA_ROOT}/receipts/{year}/{month}")
 
-            # Сохраняем каждую страницу в отдельный файл
-            for page_num in range(num_pages):
-                page = pdf_reader.pages[page_num]
-                with open(f"{settings.MEDIA_ROOT}/receipts/{year}/{month}/{page_num+1}.pdf",
-                          'wb') as output_file:
-                    pdf_writer = PyPDF2.PdfWriter()
-                    pdf_writer.add_page(page)
-                    pdf_writer.write(output_file)
-                    Receipts.objects.create(kv=f'{page_num+1}', date=f'{year}-{month}-25',
-                                            file=f'receipts/{year}/{month}/{page_num+1}.pdf')
-    # удаляем файл
-    os.remove(f"{settings.MEDIA_ROOT}/uploads/{file}")
+                    # Сохраняем каждую страницу в отдельный файл
+                    for page_num in range(num_pages):
+                        page = pdf_reader.pages[page_num]
+                        with open(f"{settings.MEDIA_ROOT}/receipts/{year}/{month}/{ls[page_num]}_{month}_{year}.pdf",
+                                  'wb') as output_file:
+                            pdf_writer = PyPDF2.PdfWriter()
+                            pdf_writer.add_page(page)
+                            pdf_writer.write(output_file)
+                            Receipts.objects.create(ls=f'{ls[page_num]}',
+                                                    date=f'{year}-{month}-25',
+                                                    file=f'receipts/{year}/{month}/{ls[page_num]}_{month}_{year}.pdf')
+                messages.success(request, 'Файл успешно импортирован')
+            else:
+                # print("ОШИБКА! КОЛ-ВО ЛИЦЕВЫХ НЕ СОВПОДАЕТ С КОЛ-ВОМ СТРАНИЦ В ФАЙЛЕ PDF")
+
+                messages.error(request, 'ОШИБКА! КОЛ-ВО ЛИЦЕВЫХ НЕ СОВПОДАЕТ С КОЛ-ВОМ СТРАНИЦ В ФАЙЛЕ PDF')
+
+            # удаляем файл
+            os.remove(f"{file.name}")
+
+    else:
+        messages.error(request, "Ошибка формата файла")
