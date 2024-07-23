@@ -120,6 +120,8 @@ def show_zayavka(request, id):
         'zayavka': zayavka
     }
     return render(request, 'users/show_zayavka.html', context)
+
+
 ###############################################################
 class ChangePasswordAjax(View):
     model = User
@@ -160,7 +162,7 @@ class EditEmailAjax(View):
                 User.objects.filter(username=request.user.username).update(email=request.POST.get('email'),
                                                                            check_email=0)
                 # отправка email для проверки
-                send_email_for_verify(request, request.user)
+                send_email_for_verify(request, request.user, request.POST.get('email'))
                 return JsonResponse(data={'status': 201}, status=200)
 
         return JsonResponse(data={'status': 400, 'error': 'Проверьте правильность email'}, status=200)
@@ -191,6 +193,8 @@ def deletezayavka(request, pk):
     if request.method == "POST":
         zayavka.delete()
         return redirect('users:lk_user')
+
+
 #########################################################
 class ZayavkaWriteAjax(View):
     def post(self, request):
@@ -211,6 +215,8 @@ class ZayavkaWriteAjax(View):
         except IntegrityError:
             return JsonResponse(data={'status': 400, 'error': "Ошибка"}, status=200)
         return JsonResponse(data={'status': 201, 'response': "Заявка успешно отправлена"}, status=200)
+
+
 #########################################################
 class EmailVerify(View):
     def get(self, request, uidb64, token):
@@ -233,6 +239,8 @@ class EmailVerify(View):
                 User.DoesNotExist, ValidationError):
             user = None
         return user
+
+
 #########################################################
 class PokazaniyaWriteAjax(View):
     def post(self, request):
@@ -253,11 +261,13 @@ class PokazaniyaWriteAjax(View):
 
         # return JsonResponse(data={'status': 201, 'response': "Показания добавлены"}, status=200)
         # return JsonResponse(data={'status': 400, 'error': "Ошибка"}, status=200)
+
+
 #########################################################
 def receipt(request):
     try:
         kvitan = Receipts.objects.filter(date__month=request.POST['month'], date__year=request.POST[
-        'year']).get(ls=request.user.ls)
+            'year']).get(ls=request.user.ls)
     except Receipts.DoesNotExist:
         kvitan = None
 

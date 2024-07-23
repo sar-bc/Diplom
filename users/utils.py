@@ -9,7 +9,7 @@ from django.contrib.auth.tokens import default_token_generator as \
 import re
 
 
-def send_email_for_verify(request, user):
+def send_email_for_verify(request, user, mail):
     current_site = get_current_site(request)
     context = {
         'user': user,
@@ -23,7 +23,7 @@ def send_email_for_verify(request, user):
     email = EmailMessage(
         'Проверка почты',
         message,
-        to=[user.email],
+        to=[mail],
     )
     email.send()
 
