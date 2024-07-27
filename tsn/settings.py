@@ -92,13 +92,22 @@ WSGI_APPLICATION = 'tsn.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": str(os.getenv('NAME_DB')),
+        "USER": str(os.getenv('USER_DB')),
+        "PASSWORD": str(os.getenv('PASSWORD_DB')),
+        "HOST": "localhost",
+        "PORT": "3306",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -137,12 +146,12 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = "~/domains/tsnzv.ru/public_html/static/"  # /home/users/j/j06264638/domains/tsnzv.ru/public_html/static/
+STATIC_ROOT = "/home/users/j/j06264638/domains/tsnzv.ru/public_html/static/"  # /home/users/j/j06264638/domains/tsnzv.ru/public_html/static/
 # STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = []
 
 # MEDIA_ROOT = BASE_DIR / '/media'
-MEDIA_ROOT = "~/domains/tsnzv.ru/public_html/media/"  # /home/users/j/j06264638/domains/tsnzv.ru/public_html/media/
+MEDIA_ROOT = "/home/users/j/j06264638/domains/tsnzv.ru/public_html/media/"  # /home/users/j/j06264638/domains/tsnzv.ru/public_html/media/
 MEDIA_URL = '/media/'
 #надо для того что бы работал тэг <iframe width="100%" height="800px" src="1.pdf" type="application/pdf"></iframe>
 X_FRAME_OPTIONS = 'SAMEORIGIN'
