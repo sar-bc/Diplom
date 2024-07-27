@@ -1,0 +1,182 @@
+<!--МОДАЛЬНЫЕ ОКНА-->
+<!-- phoneModal -->
+<div class="modal fade" id="phoneModal" tabindex="-1" aria-labelledby="phoneModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="phoneModalLabel">Peдактирование телефона</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="row">
+                        <span style="color: gray;">Мобильный телефон*</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row">
+                        <form action="{%url 'users:edit_phone_ajax' %}" id="form_phone_edit" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="step" value="phone">
+                            <div class="alert alert-danger d-none error_phone" role="alert"></div>
+                            <div class="alert alert-success d-none response" role="alert"></div>
+                            {{form_phone.phone}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row">
+                        <b>Введите номер телефона</b>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" class="btn btn-card">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- phoneModal END-->
+
+<!-- emailModal -->
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">Peдактирование E-mail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <span style="color: gray;">E-mail*</span>
+                    </div>
+                </div>
+                <form id="form_email_edit" action="{% url 'users:edit_email_ajax' %}" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col">
+                            <div class="alert alert-danger d-none error_email" role="alert"></div>
+                            <div class="alert alert-success d-none response" role="alert"></div>
+                            {{form_email.email}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            E-mail будет изменен после подтверждения.
+                        </div>
+                    </div>
+                    <!--<div class="row">
+                        <div class="col">
+                            <input type="checkbox" checked label=""> Применить данный e-mail для рассылки
+                            счетов
+                        </div>
+                    </div>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="submit" class="btn btn-card">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- emailModal END-->
+
+<!-- passwordModal -->
+         <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel"
+             aria-hidden="true">
+             <div class="modal-dialog">
+                 <div class="modal-content">
+                     <div class="modal-header">
+                         <h5 class="modal-title" id="passwordModalLabel">Изменение пароля</h5>
+
+                         <button type="button" class="btn-close" data-bs-dismiss="modal"
+                             aria-label="Close"></button>
+                     </div>
+                     <div class="modal-body">
+
+                <form method="post" action="{% url 'users:password_change_ajax' %}" id="form_change_password">
+                            {% csrf_token %}
+                            <input type="hidden"  name="step" value="password">
+
+                         <div class="row">
+                             <div class="col">
+                                 <div class="alert alert-success d-none response" role="alert"></div>
+                                 <span style="color: gray;">Придумайте длинный пароль из букв и цифр, который вам
+                                     будет легко запомнить, а другим — сложно угадать</span>
+                             </div>
+                         </div>
+                         <div class="row mt-2">
+                             <div class="col">
+                                 <span style="color: gray;"><small>Текущий пароль*</small></span>
+                             </div>
+                         </div>
+                         <div class="row ">
+                             <div class="col">
+                                 <div class="password">
+                                    <div class="alert alert-danger d-none error_old" role="alert"></div>
+                                    {{form_password.old_password}}
+                                     {% comment %} <input type="password" id="edit_password" name="password"
+                                         class="form-control form-value" required> {% endcomment %}
+                                     {% comment %} <a href="#" class="password-control"></a> {% endcomment %}
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <div class="col">
+                                 <span style="color: gray;"><small>Придумайте пароль*</small></span>
+                             </div>
+                         </div>
+                         <div class="row ">
+                             <div class="col">
+                                 <div class="password">
+                                    <div class="alert alert-danger d-none error_password2" role="alert"></div>
+                                    {{form_password.new_password1}}
+                                     {% comment %} <input type="password" id="password_new" name="password_new"
+                                         class="form-control form-value" required> {% endcomment %}
+                                     {% comment %} <a href="#" class="password-control_new"></a> {% endcomment %}
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <div class="col">
+                                 <span style="color: gray;"><small>Повтор нового пароля*</small></span>
+                             </div>
+                         </div>
+                         <div class="row ">
+                             <div class="col">
+                                 <div class="password">
+                                    {{ form_password.new_password2.errors }}
+                                    {{form_password.new_password2}}
+                                     {% comment %} <input type="password" id="password_re" name="password_re"
+                                         class="form-control form-value" required> {% endcomment %}
+                                     {% comment %} <a href="#" class="password-control_re"></a> {% endcomment %}
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="row">
+                            <div class="col">
+                                <input type='checkbox' id="show_pass_change"> <label for="show_pass_change">Показать пароль</label>
+
+                            </div>
+                         </div>
+
+
+                     </div><!--modal body-->
+                     <div class="modal-footer">
+                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                         <button type="submit" class="btn btn-dark">Сохранить</button>
+                     </form>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <!-- passwordModal END-->
+
+<!--МОДАЛЬНЫЕ ОКНА END-->

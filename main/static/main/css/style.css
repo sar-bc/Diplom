@@ -409,3 +409,9 @@ a.addlink {
    justify-content: space-between;
     text-decoration: underline;
 }
+.input_email_red{
+    border: 2px solid red;
+}
+.input_email_green{
+    border: 2px solid green;
+}

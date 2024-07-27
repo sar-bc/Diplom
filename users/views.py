@@ -130,7 +130,7 @@ class ChangePasswordAjax(View):
         form_password = PasswordChangeForm(user=request.user, data=request.POST)
         if form_password.is_valid():
             form_password.save()
-            return JsonResponse(data={'status': 201, 'response': "Успешно"}, status=200)
+            return JsonResponse(data={'status': 201, 'response': "Успешно, войдите заново!"}, status=200)
 
         errors = form_password.errors.as_json()
         return JsonResponse(data={'status': 400, 'error': errors}, status=200)
@@ -163,7 +163,7 @@ class EditEmailAjax(View):
                                                                            check_email=0)
                 # отправка email для проверки
                 send_email_for_verify(request, request.user, request.POST.get('email'))
-                return JsonResponse(data={'status': 201}, status=200)
+                return JsonResponse(data={'status': 201, 'response': "Подтверждение email на почте"}, status=200)
 
         return JsonResponse(data={'status': 400, 'error': 'Проверьте правильность email'}, status=200)
 

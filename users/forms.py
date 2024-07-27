@@ -32,9 +32,23 @@ class EditProfile(forms.ModelForm):
                 attrs={'type': 'tel', 'id': 'online_phone', 'class': 'form-control',
                        'pattern': '[+]{1}7 [(]{1}[0-9]{3}[)]{1} [0-9]{3} [0-9]{4}', 'value': data.phone,
                        'disabled': 'True'}))
-            self.fields['email'] = forms.EmailField(label='E-mail', required=False, widget=forms.TextInput(
-                attrs={'class': 'form-control form-value ', 'value': data.email, 'required': 'False',
-                       'disabled': 'True'}))
+            if data.check_email:
+                self.fields['email'] = forms.EmailField(label='E-mail', required=False, widget=forms.TextInput(
+                    attrs={'class': 'form-control ', 'value': data.email, 'required':
+                        'False',
+                           'disabled': 'True'}))
+            else:
+                if data.email:
+                    self.fields['email'] = forms.EmailField(label='E-mail', required=False, widget=forms.TextInput(
+                        attrs={'class': 'form-control input_email_red', 'value': data.email, 'required':
+                            'False',
+                               'disabled': 'True'}))
+                else:
+                    self.fields['email'] = forms.EmailField(label='E-mail', required=False, widget=forms.TextInput(
+                        attrs={'class': 'form-control', 'value': data.email, 'required':
+                            'False',
+                               'disabled': 'True'}))
+
             self.fields['password'] = forms.CharField(label='Пароь', required=False, widget=forms.PasswordInput(
                 attrs={'class': 'form-control form-value ', 'value': '0000000000000', 'required': 'False',
                        'disabled': 'True'}))
@@ -71,7 +85,7 @@ class EditEmail(forms.ModelForm):
         super(EditEmail, self).__init__(*args, **kwargs)
         if data:
             self.fields['email'] = forms.EmailField(label='E-mail', required=False, widget=forms.TextInput(
-                attrs={'class': 'form-control form-value ', 'value': data.email}))
+                attrs={'class': 'form-control form-value', 'value': data.email}))
         else:
             self.fields['email'] = forms.EmailField(label='E-mail', required=False, widget=forms.TextInput(
                 attrs={'class': 'form-control form-value ', 'value': ''}))
@@ -138,9 +152,6 @@ class Lk_receiptForm(forms.Form):
             choices={y: y for y in range(2024, 2030)})
 
     )
-
-
-
 
 
 class UserCreationForm(forms.ModelForm):
