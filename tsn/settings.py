@@ -27,11 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY = str(os.getenv('SECRET_KEY'))
 SECRET_KEY = 'django-insecure-ip5001#^#=sc55u#lixc_6lrkg4^rkb@i4865retj(-jq5ionm'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
-# дата показаний (начало/конец)
-# DAY_PERIOD = [22, 23, 24]
+ALLOWED_HOSTS = ["tsnzv.ru"]
+
 # Модель User
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/users/login/'
@@ -138,10 +137,12 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = "~/domains/tsnzv.ru/public_html/static/"  # /home/users/j/j06264638/domains/tsnzv.ru/public_html/static/
+# STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = []
 
-MEDIA_ROOT = BASE_DIR / 'media'
+# MEDIA_ROOT = BASE_DIR / '/media'
+MEDIA_ROOT = "~/domains/tsnzv.ru/public_html/media/"  # /home/users/j/j06264638/domains/tsnzv.ru/public_html/media/
 MEDIA_URL = '/media/'
 #надо для того что бы работал тэг <iframe width="100%" height="800px" src="1.pdf" type="application/pdf"></iframe>
 X_FRAME_OPTIONS = 'SAMEORIGIN'
