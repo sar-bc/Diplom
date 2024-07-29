@@ -4,8 +4,12 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 ######################################################################
 class UserMessage(models.Model):
+    """
+    Сообщения от пользователей на странице контакты
+    """
     name = models.CharField(max_length=50, verbose_name='Имя')
     email = models.EmailField(verbose_name='Email', blank=True)
     phone = models.CharField(max_length=17, verbose_name='Телефон', blank=True)
@@ -22,13 +26,17 @@ class UserMessage(models.Model):
 
 ######################################################################
 class Card(models.Model):
+    """
+    Информационные карточки внизу страницы
+    Адрес, Режим работы, карта местонахожения
+    """
     title = models.CharField(max_length=50, verbose_name="Заголовок")
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
     description = models.TextField(verbose_name="Описание")
 
     class Meta:
-        verbose_name = 'Footer Карточку'
-        verbose_name_plural = 'Footer Карточки'
+        verbose_name = 'Инфо-Карточку'
+        verbose_name_plural = 'Инфо-Карточки'
 
     def __str__(self):
         return self.title
@@ -36,6 +44,9 @@ class Card(models.Model):
 
 ######################################################################
 class News(models.Model):
+    """
+    Новости дома и района
+    """
     title = models.CharField(max_length=250, verbose_name='Заголовок новости')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
     body = models.TextField(verbose_name='Новость', blank=True)
@@ -61,6 +72,11 @@ class News(models.Model):
 
 ######################################################################
 class Info(models.Model):
+    """
+    Информация о тсн:
+    -Реквизиты
+    -Правление
+    """
     title = models.CharField(max_length=250, verbose_name='Заголовок Информации')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
     content = models.TextField(verbose_name='Информация', blank=True)
@@ -82,6 +98,11 @@ class Info(models.Model):
 
 ######################################################################
 class KatDoc(models.Model):
+    """
+    Каталог с документами(категории для документов):
+    -Собрания
+    -Тарифы
+    """
     name = models.CharField(max_length=250, verbose_name='Заголовок категории')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
 
@@ -98,6 +119,10 @@ class KatDoc(models.Model):
 
 ######################################################################
 class Doc(models.Model):
+    """
+    Документы:
+    -Протоколы собраний с файлами
+    """
     title = models.CharField(max_length=250, verbose_name='Заголовок')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
     content = models.CharField(max_length=250, blank=True, verbose_name='Описание')
@@ -121,6 +146,10 @@ class Doc(models.Model):
 
 
 class MeterDev(models.Model):
+    """
+    Модель для хранения данных о приборах учета (счетчиков)
+    для отображения данных в личном кабинете
+    """
     kv = models.IntegerField(verbose_name='Квартира')
     name = models.CharField(max_length=250, verbose_name='Наименование ПУ')
     number = models.CharField(max_length=100, verbose_name='Заводской номер', unique=True)
@@ -142,8 +171,14 @@ class MeterDev(models.Model):
 
     def __str__(self):
         return str(self.kv)
+
+
 ######################################################################
 class Pokazaniya(models.Model):
+    """
+    Модель для хранения предидущих показаний загруженных от бухгалтера
+    эти показания начислены в платежках
+    """
     kv = models.IntegerField(verbose_name='Квартира')
     hv = models.CharField(max_length=25, verbose_name='Холодная вода', blank=True)
     gv = models.CharField(max_length=25, verbose_name='Горячая вода', blank=True)
@@ -157,8 +192,12 @@ class Pokazaniya(models.Model):
     def __str__(self):
         return str(self.kv)
 
+
 ######################################################################
 class PokazaniyaUser(models.Model):
+    """
+    Показания приборов учета переданные собственниками через личный кабинет
+    """
     kv = models.IntegerField(verbose_name='Квартира')
     hv = models.CharField(max_length=25, verbose_name='Холодная вода', blank=True)
     gv = models.CharField(max_length=25, verbose_name='Горячая вода', blank=True)
@@ -171,8 +210,14 @@ class PokazaniyaUser(models.Model):
 
     def __str__(self):
         return str(self.kv)
+
+
 ######################################################################
 class Zayavki(models.Model):
+    """
+    Заявки из личного кабинета
+    для вызова сантехника, электрика и т.д.
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     description = models.TextField(verbose_name="Описание")
     phone = models.CharField(max_length=17, verbose_name='Телефон', blank=True)
@@ -184,6 +229,7 @@ class Zayavki(models.Model):
         ('2', 'Ожидание'),
     )
     status = models.CharField(max_length=3, default='2', choices=TYPE_SELECT, verbose_name='Статус', blank=True)
+
     class Meta:
         verbose_name = 'Заявку от собственника'
         verbose_name_plural = 'Заявки от собственников'
@@ -191,5 +237,3 @@ class Zayavki(models.Model):
     def __str__(self):
         return f"Заявка от {self.user.username}"
 ######################################################################
-
-

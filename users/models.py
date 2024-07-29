@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    """
+    Абстрактная модель user
+    """
     fio = models.CharField(max_length=200, verbose_name='ФИО', blank=True)
     kv = models.IntegerField(verbose_name='Квартира', blank=True, default=0)
     ls = models.IntegerField(verbose_name='Лицевой счет', blank=True, default=0)
@@ -25,9 +28,11 @@ class User(AbstractUser):
 
 ######################################################################
 class Receipts(models.Model):
-    # kv = models.IntegerField(verbose_name="Квартира")
+    """
+    Модель для хранения квитанций за квартиру
+    """
     ls = models.IntegerField(verbose_name='Лицевой счет', blank=True, default=0)
-    date = models.DateField(verbose_name='Закакой месяц')
+    date = models.DateField(verbose_name='За какой месяц')
     file = models.FileField(upload_to="receipts/", verbose_name="Квитанция")
     show = models.IntegerField(verbose_name="Кол-во скачиваний", default=0)
 

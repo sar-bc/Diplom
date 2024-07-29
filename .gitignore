@@ -2,3 +2,5 @@
 /venv
 .idea
 .env
+/DOCUMENTS
+__pycache__
