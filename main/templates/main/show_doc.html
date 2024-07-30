@@ -10,7 +10,9 @@
                 <h5 class="card-header">{{document.title}}</h5>
                 
                 <div class="card-body">
-                    <p style="text-align: left"><span style="color:gray;"><i class="bi bi-calendar-week"></i> Создано: {{document.publish|date:"d-m-Y" }}<br><i class="bi bi-eye"></i> Просмотров: {{count}}</span></p>
+                    <p style="text-align: left"><span style="color:gray;"><i class="bi bi-calendar-week"></i>
+                        Создано: {{document.publish|date:"d-m-Y" }}<br><i class="bi bi-eye"></i> Просмотров:
+                        {{count}}</span></p>
                     {{document.content|safe}}
                 
                 {% if document.file %}
