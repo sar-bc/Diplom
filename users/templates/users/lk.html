@@ -22,7 +22,7 @@
                     <small><u>(показания принимаются с 22 по 24 число)</u></small>
                     <table class="table-sm ">
                         <tr>
-                            <td><b>ХВ</b>&nbsp;<img src="{% static 'main/img/meter-blue.svg' %}" height="50"
+                            <td><b>ХВС</b>&nbsp;<img src="{% static 'main/img/meter-blue.svg' %}" height="50"
                                                     width="50"><br>
                                 {% if not device %}
                                 <small>(Счетчик № ------)<br><u>Дата след.поверки --.--.----</u></small>
@@ -49,7 +49,7 @@
 
                         </tr>
                         <tr>
-                            <td><b>ГВ</b>&nbsp;<img src="{% static 'main/img/meter-water-hot.svg' %}" height="50"
+                            <td><b>ГВС</b>&nbsp;<img src="{% static 'main/img/meter-water-hot.svg' %}" height="50"
                                                     width="50"><br>
                                 {% if not device %}
                                 <small>(Счетчик № ------)<br><u>Дата след.поверки --.--.----</u></small>
@@ -76,7 +76,7 @@
 
                         </tr>
                         <tr>
-                            <td><b>Электричество</b>&nbsp;<img src="{% static 'main/img/electric-meter.svg' %}"
+                            <td><b>Электроэнергия</b>&nbsp;<img src="{% static 'main/img/electric-meter.svg' %}"
                                                                height="50"
                                                                width="50"><br>
                                 {% if not device %}
@@ -157,7 +157,7 @@
     <div class="col-md-6 col-sm-12 my-1 ">
 
         <div class="container-cont">
-            <div class="title">Платежки</div>
+            <div class="title">Платежный документ</div>
             <form action="{%url 'users:receipt' %}" method="post">
                 {% csrf_token%}
             <table class="table-sm">
@@ -177,7 +177,7 @@
 
                     </td>
                     <td>
-                        <button type="submit" class="btn btn-card ">Просмотреть</button>
+                        <button type="submit" class="btn btn-card ">Открыть</button>
                     </td>
                 </tr>
             </table>

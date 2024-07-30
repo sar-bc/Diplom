@@ -67,7 +67,7 @@ class ZayavkaForm(forms.ModelForm):
 
     description = forms.CharField(label="Описание",
                                   widget=forms.Textarea(
-                                      attrs={"class": "form-control form-value", "placeholder": "Коротко, что у вас случилось",
+                                      attrs={"class": "form-control form-value", "placeholder": "Опешите проблему",
                                             'cols': 20, 'rows': 4}
                                   ))
     phone = forms.CharField(label="Телефон",
