@@ -125,7 +125,7 @@ class Doc(models.Model):
     """
     title = models.CharField(max_length=250, verbose_name='Заголовок')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
-    content = models.CharField(max_length=250, blank=True, verbose_name='Описание')
+    content = models.TextField(blank=True, verbose_name='Описание')
     file = models.FileField(upload_to="files/%Y/%m/%d/", verbose_name="Файл", blank=True)
     publish = models.DateTimeField(default=timezone.now, verbose_name="Создано")
     created = models.DateTimeField(auto_now_add=True)
