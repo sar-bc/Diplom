@@ -6,7 +6,6 @@ from users.forms import *
 from main.forms import PokazaniyaForm, ZayavkaForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
-from main.utils import infos, kat_doc, year
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 import csv
@@ -48,12 +47,9 @@ def login_user(request):
 
     context = {
         'title': 'Вход в личный кабинет',
-        'year': year,
         'form': form,
-        'infos': infos,
-        'kat_doc': kat_doc,
     }
-    return render(request, 'users/login.html', context=context)
+    return render(request, 'users/login.html', context)
 
 
 @login_required
@@ -66,17 +62,14 @@ def profile(request):
 
     context = {
         'title': 'Профиль пользователя',
-        'year': year,
-        'infos': infos,
-        'kat_doc': kat_doc,
         'data_user': data_user,
         'form': form,
         'form_phone': form_phone,
         'form_email': form_email,
         'form_password': form_password
     }
-    return render(request, 'users/profile.html', context=context)
-    # return HttpResponse(f"Профиль")
+    return render(request, 'users/profile.html', context)
+
 
 
 @login_required()  # login_url="/users/login/"
@@ -94,9 +87,6 @@ def lk_user(request):
 
     context = {
         'title': "Личный кабинет",  # request.user.username,
-        'year': year,
-        'infos': infos,
-        'kat_doc': kat_doc,
         'data_user': data_user,
         'device': device,
         'zayavki': zayavki,
@@ -105,8 +95,8 @@ def lk_user(request):
         'form_zayavka': form_zayavka,
         'form_receipt': form_receipt,
     }
-    return render(request, 'users/lk.html', context=context)
-    # return HttpResponse(f"Личный кабинет")
+    return render(request, 'users/lk.html', context)
+
 
 
 ###############################################################
@@ -114,9 +104,6 @@ def show_zayavka(request, id):
     zayavka = Zayavki.objects.filter(user_id=request.user.id).get(id=id)
     context = {
         'title': "Личный кабинет",  # request.user.username,
-        'year': year,
-        'infos': infos,
-        'kat_doc': kat_doc,
         'zayavka': zayavka
     }
     return render(request, 'users/show_zayavka.html', context)
@@ -273,9 +260,6 @@ def receipt(request):
 
     context = {
         'title': "Платежный документ",  # request.user.username,
-        'year': year,
-        'infos': infos,
-        'kat_doc': kat_doc,
         'kvitan': kvitan,
 
     }
