@@ -46,7 +46,7 @@
 
     {% endfor %}
 
-    {% include "main/pagination.html" with page=news_list %}
+    {% include "main/pagination.html" with queryset=news_list %}
 
 
 {% endblock %}

@@ -1,13 +1,10 @@
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from datetime import date
-import datetime
 from .models import *
 from .forms import *
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator
-
+from .utils import paginate
 
 # return HttpResponse(f"Отображение статьи с id = {post_id}")
 col = 6  # для пагинации
@@ -59,18 +56,14 @@ def show_info(request, id_slug):
 #########################################################################################
 def doc_list(request, id_slug):
     title = KatDoc.objects.get(slug=id_slug)
-    docs = Doc.objects.all().filter(kat_id__slug=id_slug)
-    ######################
+    docs_list = Doc.objects.all().filter(kat_id__slug=id_slug)
     # Постраничная разбивка с col постами на страницу
-    paginator = Paginator(docs, col)
-    page_number = request.GET.get('page', 1)
-    doc = paginator.page(page_number)
-    page_all = paginator.page_range  # передаем количество страниц для цикла в шаблоне
-    ######################
+    custom_range, docs = paginate(request, docs_list, 6)
+
     context = {
         'title': title.name,
-        'page_all': page_all,
-        'docs': doc,
+        'custom_range': custom_range,
+        'docs': docs,
     }
     return render(request, 'main/doc_list.html', context)
 
@@ -103,17 +96,13 @@ def show_news(request, id_slug):
 
 #########################################################################################
 def news_list(request):
-    news_l = News.objects.all().order_by('-id')
-    ######################
+    news_list = News.objects.all().order_by('-id')
     # Постраничная разбивка с col постами на страницу
-    paginator = Paginator(news_l, col)
-    page_number = request.GET.get('page', 1)
-    news = paginator.page(page_number)
-    page_all = paginator.page_range  # передаем количество страниц для цикла в шаблоне
-    ######################
+    custom_range, nws = paginate(request, news_list, 6)
+
     context = {
-        'news_list': news,
-        'page_all': page_all,
+        'news_list': nws,
+        'custom_range': custom_range,
     }
     return render(request, 'main/news_list.html', context)
 
