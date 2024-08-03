@@ -7,7 +7,7 @@ from .forms import *
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.paginator import Paginator
-from main.utils import infos, kat_doc, year, cards
+
 
 # return HttpResponse(f"Отображение статьи с id = {post_id}")
 col = 6  # для пагинации
@@ -18,13 +18,9 @@ def index(request):
     news = News.objects.all().order_by('-id')[:3]
     context = {
         'title': 'Главная',
-        'year': year,
-        'cards': cards,
         'news': news,
-        'infos': infos,
-        'kat_doc': kat_doc,
     }
-    return render(request, 'main/index.html', context=context)
+    return render(request, 'main/index.html', context)
 
 
 #########################################################################################
@@ -45,15 +41,10 @@ def contact(request):
         form = AddMessageForm()
     context = {
         'title': 'Контакты',
-        'year': year,
-        'cards': cards,
         'news': news,
-        'infos': infos,
-        'kat_doc': kat_doc,
         'form': form,
-
     }
-    return render(request, 'main/contact.html', context=context)
+    return render(request, 'main/contact.html', context)
 
 
 #########################################################################################
@@ -61,12 +52,8 @@ def show_info(request, id_slug):
     info = get_object_or_404(Info, slug=id_slug)
     context = {
         'info': info,
-        'year': year,
-        'cards': cards,
-        'infos': infos,
-        'kat_doc': kat_doc,
     }
-    return render(request, 'main/info.html', context=context)
+    return render(request, 'main/info.html', context)
 
 
 #########################################################################################
@@ -84,12 +71,8 @@ def doc_list(request, id_slug):
         'title': title.name,
         'page_all': page_all,
         'docs': doc,
-        'year': year,
-        'cards': cards,
-        'infos': infos,
-        'kat_doc': kat_doc,
     }
-    return render(request, 'main/doc_list.html', context=context)
+    return render(request, 'main/doc_list.html', context)
 
 
 #########################################################################################
@@ -100,13 +83,9 @@ def show_doc(request, id_slug):
     document.save(update_fields=['views'])
     context = {
         'document': document,
-        'year': year,
-        'cards': cards,
-        'infos': infos,
-        'kat_doc': kat_doc,
         'count': count
     }
-    return render(request, 'main/show_doc.html', context=context)
+    return render(request, 'main/show_doc.html', context)
 
 
 #########################################################################################
@@ -117,13 +96,9 @@ def show_news(request, id_slug):
     document.save(update_fields=['views'])
     context = {
         'document': document,
-        'year': year,
-        'cards': cards,
-        'infos': infos,
-        'kat_doc': kat_doc,
         'count': count
     }
-    return render(request, 'main/show_news.html', context=context)
+    return render(request, 'main/show_news.html', context)
 
 
 #########################################################################################
@@ -139,12 +114,8 @@ def news_list(request):
     context = {
         'news_list': news,
         'page_all': page_all,
-        'year': year,
-        'cards': cards,
-        'infos': infos,
-        'kat_doc': kat_doc,
     }
-    return render(request, 'main/news_list.html', context=context)
+    return render(request, 'main/news_list.html', context)
 
 
 #########################################################################################
@@ -153,8 +124,6 @@ def pageNotFound(request, exception):
     # cards = Card.objects.all().order_by('id')[:3]
     context = {
         'title': 'Страница не найдена',
-        'year': year,
-        'cards': cards,
     }
-    return render(request, 'main/page_not_found.html', context=context)
+    return render(request, 'main/page_not_found.html', context)
 #########################################################################################

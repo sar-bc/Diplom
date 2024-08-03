@@ -1,6 +1,5 @@
-{% load static %}
-
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru">
 
 <head>
@@ -35,14 +34,14 @@
                             <a class="nav-link " aria-current="page" href="{% url 'news_list' %}">Новости</a>
                         </li>
                         <!---->
-                        {%if infos%}
+                        {%if infos %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 Информация о ТСН
                             </a>
                             <ul class="dropdown-menu">
-                                {% for info in infos%}
+                                {% for info in infos %}
                                 <li><a class="dropdown-item" href="{{ info.get_absolute_url }}">{{info.title}}</a></li>
                                 {% endfor %}
                             </ul>
@@ -128,9 +127,8 @@
 <script src="{% static 'main/js/jquery.min.js' %}"></script>
 <script src="{% static 'main/js/main.js' %}"></script>
 <script src="{% static 'users/js/form.js' %}"></script>
-<script>
-
-</script>
+<!-- Yandex.Metrika counter -->
+<!-- /Yandex.Metrika counter -->
 </body>
 
 </html>    
