@@ -13,6 +13,7 @@ bot = telebot.TeleBot(settings.BOT_TOKEN)
 
 last_message_id = None
 last_message_id_lst = []
+user_id = None
 ##############################################
 res_ls = int()
 res_kv = int()
@@ -20,10 +21,10 @@ res_kv = int()
 
 ##############################################
 
-
+server = 'https://aef5-31-29-225-89.ngrok-free.app'
 @csrf_exempt
 def index(request):
-    bot.set_webhook('https://847a-31-29-225-89.ngrok-free.app/bot/')
+    bot.set_webhook(f'{server}/bot/')
     if request.method == "POST":
         update = telebot.types.Update.de_json(request.body.decode('utf-8'))
         bot.process_new_updates([update])
@@ -35,11 +36,13 @@ def index(request):
 def start(message: telebot.types.Message):
     global last_message_id
     global last_message_id_lst
+    global user_id
+    user_id = message.from_user.id
     # Удаляем предыдущее сообщение, если оно существует
     if last_message_id_lst:
         for lst in last_message_id_lst:
             try:
-                bot.delete_message(call.message.chat.id, lst)
+                bot.delete_message(message.chat.id, lst)
             except Exception as e:
                 print(f"Ошибка при удалении сообщения: {e}")
         last_message_id_lst.clear()
@@ -78,7 +81,7 @@ def handle_query(call):
     action = data[0]
     global last_message_id
     global last_message_id_lst
-
+    global user_id
     # Удаляем предыдущее сообщение, если оно существует
     if last_message_id_lst:
         for lst in last_message_id_lst:
@@ -100,13 +103,18 @@ def handle_query(call):
 
             keyboard = types.InlineKeyboardMarkup()
             # цикл для счетчиков
-            # mes +=f"Выберите прибор учета из списка"
-            mes += f"Приборы учета не добавлены, обратитесь в офис ТСН"
+            dev = MeterDev.objects.filter(kv=user.kv)
+            if dev:
+                mes +=f"Выберите прибор учета из списка"
+                for pu in dev:
+                    print(pu.number)
+            else:
+                mes += f"⛔ Приборы учета не добавлены, обратитесь в офис ТСН"
 
             # bot.send_message(call.message.chat.id, "⛔ Не найдено счетчиков, обратитесь в офис ТСН")
             # btn_meter = types.InlineKeyboardButton("⛔ Не найдено счетчиков, обратитесь в офис ТСН", callback_data='r')
             # keyboard.add(btn_meter)
-            btn_back = types.InlineKeyboardButton("⬅️ Возврат в начало", callback_data=f'call_all_ls:{ls}')
+            btn_back = types.InlineKeyboardButton("⬅️ Возврат в начало", callback_data=f'call_all_ls')
             btn_del = types.InlineKeyboardButton("❌ Отвязать счет", callback_data=f'call_del_ls:{ls}')
             keyboard.add(btn_back, btn_del)
             sent_mess = bot.send_message(call.message.chat.id, mes, reply_markup=keyboard)
@@ -116,9 +124,9 @@ def handle_query(call):
             mes = f"Лицевой счет № {ls} не найден!"
             bot.send_message(call.message.chat.id, mes)
     elif action == 'call_all_ls':
-        ls = data[1]
         # print(f'ls:{ls}')
-        user_bot = UsersBot.objects.filter(ls=ls)
+        user_bot = UsersBot.objects.filter(user_id=user_id)
+        # print(f'user_bot:{user_bot}')
         if user_bot:
             # id есть в базе
             keyboard = types.InlineKeyboardMarkup()
@@ -159,7 +167,7 @@ def handle_query(call):
             keyboard = types.InlineKeyboardMarkup()
             btn_add_ls = types.InlineKeyboardButton("🔍 Добавить лицевой счет", callback_data='call_add_ls')
             keyboard.add(btn_add_ls)
-            sent_mess = bot.send_message(message.chat.id, f'У вас нет добавленных лицевых счетов',
+            sent_mess = bot.send_message(call.message.chat.id, f'У вас нет добавленных лицевых счетов',
                                          reply_markup=keyboard)
             last_message_id_lst.append(sent_mess.message_id)
         except UsersBot.DoesNotExist:
