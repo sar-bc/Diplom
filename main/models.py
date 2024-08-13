@@ -159,9 +159,9 @@ class MeterDev(models.Model):
     pokazaniya = models.CharField(max_length=100, verbose_name='Начальные показания', blank=True)
     date_akt = models.DateField(verbose_name='Дата акта', blank=True)
     TYPE_SELECT = (
-        ('hv', 'ХВ'),
-        ('gv', 'ГВ'),
-        ('e', 'ЭЛ'),
+        ('hv', 'ХВС'),
+        ('gv', 'ГВС'),
+        ('e', 'ЭЛ-ВО'),
     )
     type = models.CharField(max_length=3, default='hv', choices=TYPE_SELECT, verbose_name='Тип счетчика', blank=True)
 

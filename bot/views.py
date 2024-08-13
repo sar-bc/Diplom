@@ -1,3 +1,4 @@
+#  https://habr.com/ru/sandbox/186542/ (Создание телеграм бота на Django + pyTelegramBotApi)
 from django.shortcuts import HttpResponse
 import telebot
 from telebot import types  # для указание типов
@@ -18,10 +19,11 @@ user_id = None
 res_ls = int()
 res_kv = int()
 
-
 ##############################################
 
-server = 'https://aef5-31-29-225-89.ngrok-free.app'
+server = 'https://7594-31-29-225-89.ngrok-free.app'
+
+
 @csrf_exempt
 def index(request):
     bot.set_webhook(f'{server}/bot/')
@@ -92,8 +94,10 @@ def handle_query(call):
         last_message_id_lst.clear()
 
     if action == 'call_add_ls':
+        # добавить лицевой счет
         bot.send_message(call.message.chat.id, f'Введите номер лицевого счета (только цифры, не более 8 цифр).')
     elif action == 'cal_show_ls':
+        # показать лицевой счет №
         ls = data[1]
         bot.send_message(call.message.chat.id, f"Получение списка счётчиков... ожидайте.")
         try:
@@ -105,15 +109,16 @@ def handle_query(call):
             # цикл для счетчиков
             dev = MeterDev.objects.filter(kv=user.kv)
             if dev:
-                mes +=f"Выберите прибор учета из списка"
+                mes += f"Выберите прибор учета из списка"
                 for pu in dev:
-                    print(pu.number)
+                    type_display = dict(MeterDev.TYPE_SELECT).get(pu.type, 'Неизвестный тип')
+                    btn_meter = types.InlineKeyboardButton(f"{type_display}, {pu.number}",
+                                                           callback_data=f'call_add_pokazaniya:{user.kv}:'
+                                                                         f'{pu.type}:{type_display}:{ls}')
+                    keyboard.add(btn_meter)
             else:
                 mes += f"⛔ Приборы учета не добавлены, обратитесь в офис ТСН"
 
-            # bot.send_message(call.message.chat.id, "⛔ Не найдено счетчиков, обратитесь в офис ТСН")
-            # btn_meter = types.InlineKeyboardButton("⛔ Не найдено счетчиков, обратитесь в офис ТСН", callback_data='r')
-            # keyboard.add(btn_meter)
             btn_back = types.InlineKeyboardButton("⬅️ Возврат в начало", callback_data=f'call_all_ls')
             btn_del = types.InlineKeyboardButton("❌ Отвязать счет", callback_data=f'call_del_ls:{ls}')
             keyboard.add(btn_back, btn_del)
@@ -124,6 +129,7 @@ def handle_query(call):
             mes = f"Лицевой счет № {ls} не найден!"
             bot.send_message(call.message.chat.id, mes)
     elif action == 'call_all_ls':
+        # показать все лицевые счета
         # print(f'ls:{ls}')
         user_bot = UsersBot.objects.filter(user_id=user_id)
         # print(f'user_bot:{user_bot}')
@@ -142,6 +148,7 @@ def handle_query(call):
                                          reply_markup=keyboard)
             last_message_id_lst.append(sent_mess.message_id)
     elif action == 'call_del_ls':
+        # запрос на удаление лицевого счета
         ls = data[1]
         try:
             user = User.objects.get(ls=ls)
@@ -159,6 +166,7 @@ def handle_query(call):
                                      reply_markup=keyboard)
         last_message_id_lst.append(sent_mess.message_id)
     elif action == 'call_del_ls_yes':
+        # удаление лицевого счета
         ls = data[1]
         try:
             u = UsersBot.objects.get(ls=ls)
@@ -173,6 +181,29 @@ def handle_query(call):
         except UsersBot.DoesNotExist:
             mes = f"Лицевой счет № {ls} не найден!"
             bot.send_message(call.message.chat.id, mes)
+    elif action == 'call_add_pokazaniya':
+        # добавить показания
+        pu_kv = data[1]
+        pu_type = data[2]
+        pu_type_display = data[3]
+        ls = data[4]
+        try:
+            num_pu = MeterDev.objects.get(kv=pu_kv, type=pu_type)
+        except MeterDev.DoesNotExist:
+            bot.send_message(call.message.chat.id, f'Прибор не найден')
+        # try:
+        #     pokazaniya = Pokazaniya.objects.get()
+        # except Pokazaniya.DoesNotExist:
+        #     bot.send_message(call.message.chat.id, f'Показания не найдены')
+        keyboard = types.InlineKeyboardMarkup()
+        #
+        mes = (f'Прибор учета:{pu_type_display},{num_pu.number}\n'
+               f'Предыдущие:24 (22.04.2024)\n'
+               f'Введите ниже текущее показание:')
+        btn_back = types.InlineKeyboardButton("⬅️ Возврат к списку счетчиков", callback_data=f'cal_show_ls:{ls}')
+        keyboard.add(btn_back)
+        sent_mess = bot.send_message(call.message.chat.id, mes, reply_markup=keyboard)
+        last_message_id_lst.append(sent_mess.message_id)
 
 
 @bot.message_handler(content_types=['text'])
