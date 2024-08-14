@@ -25,19 +25,19 @@ ls_glob = 0
 res_ls = int()
 res_kv = int()
 
-##############################################
 
-server = 'https://72fa-5-227-195-106.ngrok-free.app'
+##############################################
 
 
 @csrf_exempt
 def index(request):
-    bot.set_webhook(f'{server}/bot/')
+    bot.set_webhook(f'{settings.SERVER_BOT}/bot/')
     if request.method == "POST":
         update = telebot.types.Update.de_json(request.body.decode('utf-8'))
         bot.process_new_updates([update])
+        # response = bot.get_webhook_info()
 
-    return HttpResponse('<h1>Ты подключился!</h1>')
+    return HttpResponse(f'<h1>Ты подключился!</h1>:{bot.get_webhook_info()}')
 
 
 @bot.message_handler(commands=['start'])
@@ -364,5 +364,3 @@ def call_del_ls_yes_f(obj):
     except UsersBot.DoesNotExist:
         mes = f"Лицевой счет № {ls_glob} не найден!"
         bot.send_message(obj.chat.id, mes)
-
-

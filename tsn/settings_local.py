@@ -20,6 +20,7 @@ load_dotenv(dotenv_path)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 BOT_TOKEN = str(os.getenv('BOT_TOKEN'))
+SERVER_BOT = 'https://5fdc-5-227-195-106.ngrok-free.app'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
