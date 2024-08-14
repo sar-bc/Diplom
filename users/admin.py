@@ -18,11 +18,57 @@ from django.contrib.auth.admin import UserAdmin
 User = get_user_model()
 from .models import Receipts
 import PyPDF2
+from django.utils import timezone
+from datetime import timedelta
 
 
 # https://docs.djangoproject.com/en/1.8/topics/auth/customizing/#a-full-example
 
+################################################
+class YearFilter(admin.SimpleListFilter):
+    title = 'Год'
+    parameter_name = 'year'
 
+    def lookups(self, request, model_admin):
+        current_year = timezone.now().year
+        return [(year, year) for year in range(current_year - 1, current_year + 1)]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(date__year=self.value())
+        return queryset
+
+
+class MonthFilter(admin.SimpleListFilter):
+    title = 'Месяц'
+    parameter_name = 'month'
+
+    def lookups(self, request, model_admin):
+        months = [
+            (1, 'Январь'),
+            (2, 'Февраль'),
+            (3, 'Март'),
+            (4, 'Апрель'),
+            (5, 'Май'),
+            (6, 'Июнь'),
+            (7, 'Июль'),
+            (8, 'Август'),
+            (9, 'Сентябрь'),
+            (10, 'Октябрь'),
+            (11, 'Ноябрь'),
+            (12, 'Декабрь'),
+        ]
+        return months
+
+    def queryset(self, request, queryset):
+        if self.value():
+            year = request.GET.get('year')  # Получаем выбранный год
+            if year:
+                return queryset.filter(date__month=self.value(), date__year=year)
+        return queryset
+
+
+################################################
 class UserAdmin(UserAdmin):  # admin.ModelAdmin
     add_form = UserCreationForm  # CustomUserCreationForm
     search_fields = ["username"]
@@ -116,7 +162,8 @@ def uploaded_file(request, file):
 class ReceiptsAdmin(admin.ModelAdmin):
     list_display = ('ls', 'date', 'file')
     search_fields = ["ls", "date"]
-    list_filter = ['date']
+    # list_filter = ['date']
+    list_filter = (MonthFilter, YearFilter,)
 
     class Meta:
         model = Receipts
