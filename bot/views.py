@@ -27,7 +27,7 @@ res_kv = int()
 
 ##############################################
 
-server = 'https://7594-31-29-225-89.ngrok-free.app'
+server = 'https://72fa-5-227-195-106.ngrok-free.app'
 
 
 @csrf_exempt
