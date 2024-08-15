@@ -9,7 +9,7 @@ from django.conf import settings
 
 
 class AddMessageForm(forms.ModelForm):
-    # captcha = CaptchaField()
+    captcha = CaptchaField()
     class Meta:
         model = UserMessage
         fields = ['name', 'email', 'phone', 'message']
