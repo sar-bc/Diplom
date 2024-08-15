@@ -7,8 +7,8 @@
 <div class="container">
     <h2>Личный кабинет</h2>
     <p>Лицевой счет: <b>№ {{ user.username }}</b></p>
-    <p>Адрес: {{ data_user.address}}</p>
-    <p>Площадь помещения:&nbsp;<b>{{ data_user.sq }}</b>&nbsp;кв.м</p>
+    <p>Адрес: {{data_user.address}}</p>
+    <p>Площадь помещения:&nbsp;<b>{{data_user.sq}}</b>&nbsp;кв.м</p>
     <!-- <hr class="space m" /> -->
     <div class="row">
         <div class="col-md-6 col-sm-12 my-1">
@@ -30,7 +30,7 @@
 
                                 {%for dev in device %}
                                 {% if "hv" in dev.type %}
-                                <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
+                                <small>({{dev.name}} № {{dev.number}})<br><u>Дата след.поверки
                                     {{dev.data_pov_next}}</u></small>
                                 {% endif %}
                                 {% endfor %}
@@ -56,7 +56,7 @@
                                 {% endif %}
                                 {%for dev in device %}
                                 {% if "gv" in dev.type %}
-                                <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
+                                <small>({{dev.name}} № {{dev.number}})<br><u>Дата след.поверки
                                     {{dev.data_pov_next}}</u></small>
                                 {% endif %}
                                 {% endfor %}
@@ -84,7 +84,7 @@
                                 {% endif %}
                                 {%for dev in device %}
                                 {% if "e" in dev.type %}
-                                <small>({{ dev.name }} № {{dev.number}})<br><u>Дата след.поверки
+                                <small>({{dev.name}} № {{dev.number}})<br><u>Дата след.поверки
                                     {{dev.data_pov_next}}</u></small>
                                 {% endif %}
                                 {% endfor %}

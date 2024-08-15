@@ -31,12 +31,12 @@ res_kv = int()
 
 @csrf_exempt
 def index(request):
-    bot.set_webhook(f'{settings.SERVER_BOT}/bot/')
     if request.method == "POST":
         update = telebot.types.Update.de_json(request.body.decode('utf-8'))
         bot.process_new_updates([update])
-        # response = bot.get_webhook_info()
-
+    else:
+        bot.remove_webhook()
+        bot.set_webhook(f'{settings.SERVER_BOT}/bot/')
     return HttpResponse(f'<h1>Ты подключился!</h1>:{bot.get_webhook_info()}')
 
 

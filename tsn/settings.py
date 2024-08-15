@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'import_export',
     'main.apps.MainConfig',
     'users.apps.UsersConfig',
+    'bot.apps.BotConfig',
 ]
 
 MIDDLEWARE = [
@@ -148,12 +149,14 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = "/home/users/j/j06264638/domains/tsnzv.ru/public_html/static/"  # /home/users/j/j06264638/domains/tsnzv.ru/public_html/static/
-# STATIC_ROOT = BASE_DIR / 'static'
+# /home/users/j/j06264638/domains/tsnzv.ru/public_html/static/  (jino)
+# /home/sar-bc/sites/tsnzv.ru/static/
+# STATIC_ROOT = "/home/sar-bc/sites/tsnzv.ru/static/"
+STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = []
 
-# MEDIA_ROOT = BASE_DIR / '/media'
-MEDIA_ROOT = "/home/users/j/j06264638/domains/tsnzv.ru/public_html/media/"  # /home/users/j/j06264638/domains/tsnzv.ru/public_html/media/
+MEDIA_ROOT = BASE_DIR / '/media'
+# MEDIA_ROOT = "/home/users/j/j06264638/domains/tsnzv.ru/public_html/media/"  # /home/users/j/j06264638/domains/tsnzv.ru/public_html/media/
 MEDIA_URL = '/media/'
 #надо для того что бы работал тэг <iframe width="100%" height="800px" src="1.pdf" type="application/pdf"></iframe>
 X_FRAME_OPTIONS = 'SAMEORIGIN'
