@@ -3,7 +3,7 @@ from django.shortcuts import HttpResponse
 import telebot
 from telebot import types  # для указание типов
 from django.conf import settings
-from .models import UsersBot
+from bot.models import UsersBot
 from main.models import MeterDev, Pokazaniya, PokazaniyaUser
 from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import csrf_exempt
