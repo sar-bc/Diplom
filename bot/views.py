@@ -142,10 +142,14 @@ def func(message):
                 if u:
                     # добавляем данные телеграм user и лицевой
                     try:
-                        UsersBot.objects.create(user_id=message.from_user.id, username=message.from_user.username,
+                        if UsersBot.objects.filter(ls=res_ls):
+                            bot.send_message(message.chat.id,
+                                             text=f"⛔ Лицевой счет уже добавлен!")
+                        else:
+                            UsersBot.objects.create(user_id=message.from_user.id, username=message.from_user.username,
                                             ls=res_ls,
                                             kv=res_kv)
-                        bot.send_message(message.chat.id, text=f"Лицевой счет №{res_ls} успешно добавлен.")
+                            bot.send_message(message.chat.id, text=f"Лицевой счет №{res_ls} успешно добавлен.")
                     except Exception as e:
                         bot.send_message(message.chat.id, text=f"Ошибка {e}.")
                     call_all_ls_f(message)
