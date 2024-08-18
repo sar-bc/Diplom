@@ -10,6 +10,7 @@ from django.conf import settings
 
 class AddMessageForm(forms.ModelForm):
     captcha = CaptchaField()
+
     class Meta:
         model = UserMessage
         fields = ['name', 'email', 'phone', 'message']
@@ -55,6 +56,7 @@ class PokazaniyaForm(forms.ModelForm):
         model = PokazaniyaUser
         fields = ['kv', 'hv', 'gv', 'e']
 
+
 # Форма передачи заявки
 class ZayavkaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -68,13 +70,19 @@ class ZayavkaForm(forms.ModelForm):
     description = forms.CharField(label="Описание",
                                   widget=forms.Textarea(
                                       attrs={"class": "form-control form-value", "placeholder": "Опешите проблему",
-                                            'cols': 20, 'rows': 4}
+                                             'cols': 20, 'rows': 4}
                                   ))
     phone = forms.CharField(label="Телефон",
                             widget=forms.TextInput(
-                                attrs={'type': 'tel', 'placeholder': '+7 (999) 111 3333', 'id': 'online_phone', 'class': 'form-control',
-                       'pattern': '[+]{1}7 [(]{1}[0-9]{3}[)]{1} [0-9]{3} [0-9]{4}'}
+                                attrs={'type': 'tel', 'placeholder': '+7 (999) 111 3333', 'id': 'online_phone',
+                                       'class': 'form-control',
+                                       'pattern': '[+]{1}7 [(]{1}[0-9]{3}[)]{1} [0-9]{3} [0-9]{4}'}
                             ))
+
     class Meta:
         model = Zayavki
         fields = ['description', 'phone']
+
+
+class MeterImportForm(forms.Form):
+    csv_file = forms.FileField(label="CSV Файл с номерами счетчикков")

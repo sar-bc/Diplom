@@ -3,7 +3,7 @@ from django.shortcuts import HttpResponse
 import telebot
 from telebot import types  # для указание типов
 from django.conf import settings
-from .models import UsersBot
+from bot.models import UsersBot
 from main.models import MeterDev, Pokazaniya, PokazaniyaUser
 from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import csrf_exempt
@@ -25,19 +25,19 @@ ls_glob = 0
 res_ls = int()
 res_kv = int()
 
-##############################################
 
-server = 'https://7594-31-29-225-89.ngrok-free.app'
+##############################################
 
 
 @csrf_exempt
 def index(request):
-    bot.set_webhook(f'{server}/bot/')
     if request.method == "POST":
         update = telebot.types.Update.de_json(request.body.decode('utf-8'))
         bot.process_new_updates([update])
-
-    return HttpResponse('<h1>Ты подключился!</h1>')
+    else:
+        bot.remove_webhook()
+        bot.set_webhook(f'{settings.SERVER_BOT}/bot/')
+    return HttpResponse(f'<h1>Ты подключился!</h1>:{bot.get_webhook_info()}')
 
 
 @bot.message_handler(commands=['start'])
@@ -141,10 +141,17 @@ def func(message):
                 u = User.objects.filter(ls=res_ls, kv=res_kv)
                 if u:
                     # добавляем данные телеграм user и лицевой
-                    UsersBot.objects.create(user_id=message.from_user.id, username=message.from_user.username,
+                    try:
+                        if UsersBot.objects.filter(ls=res_ls, user_id=message.from_user.id):
+                            bot.send_message(message.chat.id,
+                                             text=f"⛔ Лицевой счет уже добавлен!")
+                        else:
+                            UsersBot.objects.create(user_id=message.from_user.id, username=message.from_user.username,
                                             ls=res_ls,
                                             kv=res_kv)
-                    bot.send_message(message.chat.id, text=f"Лицевой счет №{res_ls} успешно добавлен.")
+                            bot.send_message(message.chat.id, text=f"Лицевой счет №{res_ls} успешно добавлен.")
+                    except Exception as e:
+                        bot.send_message(message.chat.id, text=f"Ошибка {e}.")
                     call_all_ls_f(message)
                 else:
                     bot.send_message(message.chat.id,
@@ -364,5 +371,3 @@ def call_del_ls_yes_f(obj):
     except UsersBot.DoesNotExist:
         mes = f"Лицевой счет № {ls_glob} не найден!"
         bot.send_message(obj.chat.id, mes)
-
-

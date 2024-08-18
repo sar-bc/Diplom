@@ -142,7 +142,7 @@ def func(message):
                 if u:
                     # добавляем данные телеграм user и лицевой
                     try:
-                        if UsersBot.objects.filter(ls=res_ls):
+                        if UsersBot.objects.filter(ls=res_ls, user_id=message.from_user.id):
                             bot.send_message(message.chat.id,
                                              text=f"⛔ Лицевой счет уже добавлен!")
                         else:
