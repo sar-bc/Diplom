@@ -46,7 +46,10 @@ def index(request):
 ##############################################
 @bot.message_handler(commands=['start'])
 def start(message: telebot.types.Message):
+    state.user_id = None
     state.step = 0
+    state.kv = 0
+    state.ls = 0
     # state.user_id = message.from_user.id
     delete_messages(message)
     bot.send_message(message.chat.id, "Добро пожаловать!")
@@ -88,7 +91,8 @@ def create_keyboard(buttons):
 #############################################
 def call_add_ls(message, *data):
     state.user_id = data[0]
-    print(f'call_add_ls:state.user_id={state.user_id}')
+    if settings.DEBUG:
+        print(f'call_add_ls:state.user_id={state.user_id}')
     bot.send_message(message.chat.id, f'Введите номер лицевого счета (только цифры, не более 8 цифр).')
 
 
@@ -98,7 +102,8 @@ def call_show_ls(message, *data):
     ls = data[1]
     kv = data[2]
     state.step = 0
-    print(f'call_show_ls:user_id={user_id},kv={kv}, ls={ls}')
+    if settings.DEBUG:
+        print(f'call_show_ls:user_id={user_id},kv={kv}, ls={ls}')
     bot.send_message(message.chat.id, f"Получение списка счётчиков... ожидайте.")
     try:
         user = User.objects.get(ls=ls)
@@ -128,7 +133,8 @@ def call_show_ls(message, *data):
 
 #############################################
 def call_all_ls(message, user_id):
-    print(f'call_all_ls:user_id={user_id}')
+    if settings.DEBUG:
+        print(f'call_all_ls:user_id={user_id}')
     user_bot = UsersBot.objects.filter(user_id=user_id)
     # print(f'user_bot:{user_bot}')
     keyboard = types.InlineKeyboardMarkup()
@@ -152,7 +158,11 @@ def call_add_pokazaniya(message, *data):
     kv = data[1]
     pu_type = data[2]
     ls = data[3]
-    print(f'call_add_pokazaniya:user_id={user_id},kv={kv},pu_type={pu_type}, ls={ls}')
+    state.kv = kv
+    state.ls = ls
+    state.user_id = user_id
+    if settings.DEBUG:
+        print(f'call_add_pokazaniya:user_id={user_id},kv={kv},pu_type={pu_type}, ls={ls}')
     if pu_type == 'hv':
         state.step = 1
     elif pu_type == 'gv':
@@ -191,7 +201,8 @@ def call_del_ls(message, *data):
     user_id = data[0]
     ls = data[1]
     kv = data[2]
-    print(f'call_del_ls:user_id={user_id},ls={ls},kv={kv}')
+    if settings.DEBUG:
+        print(f'call_del_ls:user_id={user_id},ls={ls},kv={kv}')
     try:
         user = User.objects.get(ls=ls)
     except User.DoesNotExist:
@@ -213,12 +224,14 @@ def call_del_ls_yes(message, *data):
     user_id = data[0]
     ls = data[1]
     kv = data[2]
-    print(f'call_del_ls_yes:user_id={user_id},ls={ls},kv={kv}')
+    if settings.DEBUG:
+        print(f'call_del_ls_yes:user_id={user_id},ls={ls},kv={kv}')
     try:
-        u = UsersBot.objects.get(ls=ls)
+        u = UsersBot.objects.get(user_id=user_id, ls=ls)
         u.delete()
         bot.send_message(message.chat.id, f'Лицевой счет №{ls} успешно отвязан!')
-        print(f"del_yes:{user_id}")
+        if settings.DEBUG:
+            print(f"del_yes:{user_id}")
         call_all_ls(message, user_id)
     except UsersBot.DoesNotExist:
         mes = f"Лицевой счет № {ls} не найден!"
@@ -236,7 +249,6 @@ def delete_messages(message):
         state.last_message_ids.clear()
 
 
-##############################################
 ##############################################
 # обработка входящего текста
 @bot.message_handler(content_types=['text'])
@@ -267,12 +279,18 @@ def func(message):
                             bot.send_message(message.chat.id,
                                              text=f"⛔ Лицевой счет уже добавлен!")
                         else:
-                            UsersBot.objects.create(user_id=message.from_user.id, username=message.from_user.username,
-                                                    ls=state.ls,
-                                                    kv=state.kv)
+                            if message.from_user.username:
+                                UsersBot.objects.create(user_id=message.from_user.id,
+                                                        username=message.from_user.username,
+                                                        ls=state.ls,
+                                                        kv=state.kv)
+                            else:
+                                UsersBot.objects.create(user_id=message.from_user.id,
+                                                        ls=state.ls,
+                                                        kv=state.kv)
                             bot.send_message(message.chat.id, text=f"Лицевой счет №{state.ls} успешно добавлен.")
                     except Exception as e:
-                        bot.send_message(message.chat.id, text=f"Ошибка {e}.")
+                        bot.send_message(message.chat.id, text=f"Ошибка... {e}.")
                     call_all_ls(message, message.from_user.id)
                 else:
                     bot.send_message(message.chat.id,
@@ -282,8 +300,74 @@ def func(message):
             bot.send_message(message.chat.id,
                              text="Вы ввели некорректное значение! Введите номер лицевого счета еще раз")
     elif state.step == 1:
-        ...
+        if 1 <= len(message.text) <= 8:  # длина показаний
+            try:
+                val = int(message.text)
+                bot.send_message(message.chat.id,
+                                 text=f"Введено показание: {val}... ожидайте")
+                try:
+                    req = PokazaniyaUser.objects.filter(date=date.today(), kv=state.kv)
+                    if req:
+                        req.update(hv=val)
+                    else:
+                        PokazaniyaUser.objects.create(kv=state.kv, hv=val)
+                except IntegrityError:
+                    print("Ошибка")
+                bot.send_message(message.chat.id,
+                                 text=f"Показания приняты успешно!")
+                data = [state.user_id, state.ls, state.kv]
+                call_show_ls(message, *data)
+            except ValueError:
+                bot.send_message(message.chat.id,
+                                 text="Введено некорректное число. Попробуйте еще раз:")
+        else:
+            bot.send_message(message.chat.id,
+                             text="Количество символов превышает 8. Попробуйте еще раз:")
     elif state.step == 2:
-        ...
+        if 1 <= len(message.text) <= 8:  # длина показаний
+            try:
+                val = int(message.text)
+                bot.send_message(message.chat.id,
+                                 text=f"Введено показание: {val}... ожидайте")
+                try:
+                    req = PokazaniyaUser.objects.filter(date=date.today(), kv=state.kv)
+                    if req:
+                        req.update(gv=val)
+                    else:
+                        PokazaniyaUser.objects.create(kv=state.kv, gv=val)
+                except IntegrityError:
+                    print("Ошибка")
+                bot.send_message(message.chat.id,
+                                 text=f"Показания приняты успешно!")
+                data = [state.user_id, state.ls, state.kv]
+                call_show_ls(message, *data)
+            except ValueError:
+                bot.send_message(message.chat.id,
+                                 text="Введено некорректное число. Попробуйте еще раз:")
+        else:
+            bot.send_message(message.chat.id,
+                             text="Количество символов превышает 8. Попробуйте еще раз:")
     elif state.step == 3:
-        ...
+        if 1 <= len(message.text) <= 8:  # длина показаний
+            try:
+                val = int(message.text)
+                bot.send_message(message.chat.id,
+                                 text=f"Введено показание: {val}... ожидайте")
+                try:
+                    req = PokazaniyaUser.objects.filter(date=date.today(), kv=state.kv)
+                    if req:
+                        req.update(e=val)
+                    else:
+                        PokazaniyaUser.objects.create(kv=state.kv, e=val)
+                except IntegrityError:
+                    print("Ошибка")
+                bot.send_message(message.chat.id,
+                                 text=f"Показания приняты успешно!")
+                data = [state.user_id, state.ls, state.kv]
+                call_show_ls(message, *data)
+            except ValueError:
+                bot.send_message(message.chat.id,
+                                 text="Введено некорректное число. Попробуйте еще раз:")
+        else:
+            bot.send_message(message.chat.id,
+                             text="Количество символов превышает 8. Попробуйте еще раз:")

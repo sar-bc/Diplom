@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.utils import timezone
 from datetime import timedelta
+import datetime
 from .models import *
 from .forms import MeterImportForm
 from django.contrib.auth.models import User
@@ -252,7 +253,8 @@ class PokazaniyaAdmin(ImportExportModelAdmin, ExportActionMixin, admin.ModelAdmi
 
 ###########################################################
 @admin.register(PokazaniyaUser)
-class PokazaniyaUserAdmin(ImportExportModelAdmin, ExportActionMixin, admin.ModelAdmin):
+class PokazaniyaUserAdmin(admin.ModelAdmin):
+    actions = ["export_to_csv"]
     list_display = ('kv', 'hv', 'gv', 'e', 'date',)
     search_fields = ['date']
     ordering = ['kv']
@@ -262,6 +264,25 @@ class PokazaniyaUserAdmin(ImportExportModelAdmin, ExportActionMixin, admin.Model
     class Meta:
         model = PokazaniyaUser
         fields = ('kv', 'hv', 'gv', 'e', 'date',)
+
+    def export_to_csv(self, request, queryset):
+        # Создаем HTTP-ответ с заголовками для CSV
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="PokazaniyaUser_export.csv"'
+
+        writer = csv.writer(response)
+
+        # Записываем заголовки
+        # writer.writerow(['ID', 'Тип счетчика'])  # Добавьте другие заголовки по необходимости
+        writer.writerow(['Кв', 'ХВС', 'ГВС', 'ЭЛ-ВО', 'Дата'])
+
+        for obj in queryset:
+            # type_display = dict(MeterDev.TYPE_SELECT).get(obj.type, obj.type)  # Получаем отображаемое значение
+            writer.writerow([obj.kv, obj.hv, obj.gv, obj.e, obj.date])
+        return response
+
+
+    export_to_csv.short_description = "Экспорт в CSV"
 
 
 ###########################################################
