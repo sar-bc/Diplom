@@ -265,6 +265,21 @@ class PokazaniyaUserAdmin(admin.ModelAdmin):
         model = PokazaniyaUser
         fields = ('kv', 'hv', 'gv', 'e', 'date',)
 
+    # def export_to_csv(self, request, queryset):
+    #     # Создаем HTTP-ответ с заголовками для CSV
+    #     response = HttpResponse(content_type='text/csv')
+    #     response['Content-Disposition'] = 'attachment; filename="PokazaniyaUser_export.csv"'
+    #
+    #     writer = csv.writer(response)
+    #
+    #     # Записываем заголовки
+    #     # writer.writerow(['ID', 'Тип счетчика'])  # Добавьте другие заголовки по необходимости
+    #     writer.writerow(['Кв', 'ХВС', 'ГВС', 'ЭЛ-ВО', 'Дата'])
+    #
+    #     for obj in queryset:
+    #         # type_display = dict(MeterDev.TYPE_SELECT).get(obj.type, obj.type)  # Получаем отображаемое значение
+    #         writer.writerow([obj.kv, obj.hv, obj.gv, obj.e, obj.date])
+    #     return response
     def export_to_csv(self, request, queryset):
         # Создаем HTTP-ответ с заголовками для CSV
         response = HttpResponse(content_type='text/csv')
@@ -273,14 +288,27 @@ class PokazaniyaUserAdmin(admin.ModelAdmin):
         writer = csv.writer(response)
 
         # Записываем заголовки
-        # writer.writerow(['ID', 'Тип счетчика'])  # Добавьте другие заголовки по необходимости
         writer.writerow(['Кв', 'ХВС', 'ГВС', 'ЭЛ-ВО', 'Дата'])
 
-        for obj in queryset:
-            # type_display = dict(MeterDev.TYPE_SELECT).get(obj.type, obj.type)  # Получаем отображаемое значение
-            writer.writerow([obj.kv, obj.hv, obj.gv, obj.e, obj.date])
-        return response
+        # Сортируем queryset по дате
+        queryset = queryset.order_by('date')
 
+        # Словарь для хранения последних записей по уникальным kv и дате
+        unique_records = {}
+
+        for obj in queryset:
+            # Уникальный ключ на основе kv и даты
+            key = (obj.kv, obj.date)
+
+            # Сохраняем только последние записи по уникальному ключу
+            if key not in unique_records or obj.date > unique_records[key].date:
+                unique_records[key] = obj
+
+        # Записываем только последние записи по уникальным kv и дате
+        for obj in unique_records.values():
+            writer.writerow([obj.kv, obj.hv, obj.gv, obj.e, obj.date.strftime('%Y-%m-%d')])
+
+        return response
 
     export_to_csv.short_description = "Экспорт в CSV"
 
