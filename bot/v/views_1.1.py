@@ -47,18 +47,13 @@ def index(request):
 @bot.message_handler(commands=['start'])
 def start(message: telebot.types.Message):
     state.user_id = None
-    state.step = 10
+    state.step = 0
     state.kv = 0
     state.ls = 0
     # state.user_id = message.from_user.id
     delete_messages(message)
     bot.send_message(message.chat.id, "Добро пожаловать!")
     call_all_ls(message, message.from_user.id)
-    # step 0- ожидание лицевого
-    # step 1- ожидание показания ХВС
-    # step 2- ожидание показания ГВС
-    # step 3- ожидание показания ЭЛ-ВО
-    # step 4- ожидание квартиры
 
 
 ##############################################
@@ -85,10 +80,16 @@ def handle_query(call):
 ##############################################
 # FUNCTION
 #############################################
+def create_keyboard(buttons):
+    keyboard = types.InlineKeyboardMarkup()
+    for button in buttons:
+        keyboard.add(button)
+    return keyboard
 
+
+#############################################
 def call_add_ls(message, *data):
     state.user_id = data[0]
-    state.step = 0
     if settings.DEBUG:
         print(f'call_add_ls:state.user_id={state.user_id}')
     bot.send_message(message.chat.id, f'Введите номер лицевого счета (только цифры, не более 8 цифр).')
@@ -257,11 +258,43 @@ def func(message):
                 state.ls = int(message.text)
                 bot.send_message(message.chat.id,
                                  text="Очень хорошо! Теперь введите номер квартиры (не более 3 символов).")
-                state.step = 4
             except ValueError:
                 bot.send_message(message.chat.id,
                                  text="Вы ввели некорректное значение! Введите номер лицевого счета еще раз")
+        elif 1 <= len(message.text) <= 3:
+            try:
+                state.kv = int(message.text)
+            except ValueError:
+                bot.send_message(message.chat.id,
+                                 text="Вы ввели некорректное значение! Введите номер квартиры еще раз")
 
+            if state.ls and state.kv:
+                bot.send_message(message.chat.id, text="Подождите, идёт поиск и привязка лицевого счета..")
+                u = User.objects.filter(ls=state.ls, kv=state.kv)
+                if u:
+                    # добавляем данные телеграм user и лицевой
+                    try:
+                        if UsersBot.objects.filter(ls=state.ls, user_id=message.from_user.id):
+                            bot.send_message(message.chat.id,
+                                             text=f"⛔ Лицевой счет уже добавлен!")
+                        else:
+                            if message.from_user.username:
+                                UsersBot.objects.create(user_id=message.from_user.id,
+                                                        username=message.from_user.username,
+                                                        ls=state.ls,
+                                                        kv=state.kv)
+                            else:
+                                UsersBot.objects.create(user_id=message.from_user.id,
+                                                        ls=state.ls,
+                                                        kv=state.kv)
+                            bot.send_message(message.chat.id, text=f"Лицевой счет №{state.ls} успешно добавлен.")
+                    except Exception as e:
+                        bot.send_message(message.chat.id, text=f"Ошибка... {e}.")
+                    call_all_ls(message, message.from_user.id)
+                else:
+                    bot.send_message(message.chat.id,
+                                     text="Не удалось найти указанный лицевой счет! Обратитесь в офис ТСН")
+                    call_all_ls(message, message.from_user.id)
         else:
             bot.send_message(message.chat.id,
                              text="Вы ввели некорректное значение! Введите номер лицевого счета еще раз")
@@ -337,48 +370,3 @@ def func(message):
         else:
             bot.send_message(message.chat.id,
                              text="Количество символов превышает 8. Попробуйте еще раз:")
-    elif state.step == 4:
-        if 1 <= len(message.text) <= 3:
-            try:
-                state.kv = int(message.text)
-            except ValueError:
-                bot.send_message(message.chat.id,
-                                 text="Вы ввели некорректное значение! Введите номер квартиры еще раз")
-
-            if state.ls and state.kv:
-                bot.send_message(message.chat.id, text="Подождите, идёт поиск и привязка лицевого счета..")
-                u = User.objects.filter(ls=state.ls, kv=state.kv)
-                if u:
-                    # добавляем данные телеграм user и лицевой
-                    try:
-                        if UsersBot.objects.filter(ls=state.ls, user_id=message.from_user.id):
-                            bot.send_message(message.chat.id,
-                                             text=f"⛔ Лицевой счет уже добавлен!")
-                        else:
-                            if message.from_user.username:
-                                UsersBot.objects.create(user_id=message.from_user.id,
-                                                        username=message.from_user.username,
-                                                        ls=state.ls,
-                                                        kv=state.kv)
-                            else:
-                                UsersBot.objects.create(user_id=message.from_user.id,
-                                                        ls=state.ls,
-                                                        kv=state.kv)
-                            bot.send_message(message.chat.id, text=f"Лицевой счет №{state.ls} успешно добавлен.")
-                    except Exception as e:
-                        bot.send_message(message.chat.id, text=f"Ошибка... {e}.")
-                    state.step = 10
-                    call_all_ls(message, message.from_user.id)
-                else:
-                    bot.send_message(message.chat.id,
-                                     text="Не удалось найти указанный лицевой счет! Обратитесь в офис ТСН")
-                    state.step = 10
-                    call_all_ls(message, message.from_user.id)
-        else:
-            bot.send_message(message.chat.id,
-                             text="Вы ввели некорректное значение! Введите номер квартиры еще раз")
-    else:
-        bot.send_message(message.chat.id,
-                         text="Вы ввели некорректную команду!")
-        delete_messages(message)
-        call_all_ls(message, message.from_user.id)

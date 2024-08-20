@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 BOT_TOKEN = str(os.getenv('BOT_TOKEN'))
 # SERVER_BOT = 'https://tsnzv.ru'
-SERVER_BOT = 'https://3b34-95-104-149-197.ngrok-free.app'
+SERVER_BOT = 'https://f887-2a00-1fa1-862b-2a3e-b111-4a16-10f5-78e8.ngrok-free.app'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/

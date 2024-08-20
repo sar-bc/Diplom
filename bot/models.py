@@ -20,5 +20,5 @@ class UsersBot(models.Model):
         return str(self.user_id)
 
     class Meta:
-        verbose_name = 'Пользователи бота'
+        verbose_name = 'Пользователя бота'
         verbose_name_plural = 'Пользователи бота'
