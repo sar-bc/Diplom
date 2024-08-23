@@ -22,3 +22,14 @@ class UsersBot(models.Model):
     class Meta:
         verbose_name = 'Пользователя бота'
         verbose_name_plural = 'Пользователи бота'
+
+
+class UserState(models.Model):
+    user_id = models.BigIntegerField()
+    last_message_ids = models.JSONField(default=list)  # Можно использовать JSON-формат для хранения списка
+    step = models.IntegerField(default=10)
+    kv = models.IntegerField(default=0)
+    ls = models.IntegerField(default=0)
+
+
+
