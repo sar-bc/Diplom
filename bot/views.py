@@ -9,6 +9,9 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
 from datetime import date
+from django.contrib.auth.decorators import login_required
+from .forms import MessageBotForm
+from django.shortcuts import render
 
 User = get_user_model()
 
@@ -33,6 +36,19 @@ def index(request):
         bot.remove_webhook()
         bot.set_webhook(f'{settings.SERVER_BOT}/bot/')
     return HttpResponse(f'<h1>Ты подключился!</h1>:{bot.get_webhook_info()}')
+
+
+##############################################
+@login_required
+def send_message(request):
+    if request.method == 'POST':
+        ...
+    else:
+        form = MessageBotForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'bot/message.html', context)
 
 
 ##############################################
