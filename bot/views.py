@@ -9,13 +9,17 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
 from datetime import date
-from django.contrib.auth.decorators import login_required
-from .forms import MessageBotForm
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from .forms import MessageForm
+from django.shortcuts import get_object_or_404, redirect, render
+import requests
+from django.contrib import messages
 
 User = get_user_model()
 
 bot = telebot.TeleBot(settings.BOT_TOKEN)
+
+url = f'https://api.telegram.org/bot{settings.BOT_TOKEN}/sendMessage'
 
 
 ##############################################
@@ -39,16 +43,41 @@ def index(request):
 
 
 ##############################################
-@login_required
 def send_message(request):
     if request.method == 'POST':
-        ...
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.cleaned_data['message']
+            ids = form.cleaned_data['id_list']
+            id_list = ids.split(',')
+            for id_t in id_list:
+                payload = {
+                    'chat_id': id_t,
+                    'text': message
+                }
+                response = requests.post(url, json=payload)
+                if response.status_code == 200:
+                    print('Сообщение отправлено успешно!')
+                else:
+                    print('Ошибка при отправке сообщения:', response.text)
+            messages.success(request, f'Сообщение отправлено.')
+            return HttpResponseRedirect('/admin/bot/usersbot/')
+
     else:
-        form = MessageBotForm()
+        ids = request.GET.get('ids', '')
+        if ids:
+            id_list = ids.split(',')
+            form = MessageForm(id_list=id_list)
+            # Обработайте ваши объекты по ID
+            print(f'id_list:{id_list}')
+        else:
+            messages.error(request, f'Выберите хотя бы одного отправителя')
+            return HttpResponseRedirect('/admin/bot/usersbot/')
+
     context = {
-        'form': form
+        'form': form,
     }
-    return render(request, 'bot/message.html', context)
+    return render(request, 'admin/add_message.html', context)
 
 
 ##############################################

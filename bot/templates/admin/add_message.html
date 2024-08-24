@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>Добавить сообщение</h1>
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}  <!-- Это должно отобразить поле для ввода сообщения -->
+    <button type="submit">Добавить сообщение</button>
+</form>
+
+
+
+{% if form.errors %}
+    <div class="error">
+        {{ form.errors }}
+    </div>
+{% endif %}
+{% endblock %}
