@@ -198,7 +198,7 @@ def call_add_pokazaniya(state, message, *data):
 
     p = []
     try:
-        pokaz_dev = list(Pokazaniya.objects.filter(kv=state.kv).order_by("-date").values())
+        pokaz_dev = list(PokazaniyaUser.objects.filter(kv=state.kv).order_by("-date").values())
         if pokaz_dev:
             p = pokaz_dev[0]
     except Pokazaniya.DoesNotExist:
