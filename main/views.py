@@ -22,7 +22,7 @@ def index(request):
 
 #########################################################################################
 def contact(request):
-    news = News.objects.all().order_by('-id')[:3]
+    # news = News.objects.all().order_by('-id')[:3]
     if request.method == 'POST':
         form = AddMessageForm(request.POST)
         if form.is_valid():
@@ -38,7 +38,7 @@ def contact(request):
         form = AddMessageForm()
     context = {
         'title': 'Контакты',
-        'news': news,
+        # 'news': news,
         'form': form,
     }
     return render(request, 'main/contact.html', context)
