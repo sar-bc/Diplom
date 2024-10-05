@@ -1,14 +1,9 @@
-from audioop import reverse
-from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from users.forms import *
 from main.forms import PokazaniyaForm, ZayavkaForm
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-import csv
 from django.contrib.auth import get_user_model
 from django.views import View
 from django.core.mail import send_mail
@@ -26,11 +21,6 @@ from .models import Receipts
 
 User = get_user_model()
 
-
-# class LoginUser(LoginView):
-#     form_class = AuthenticationForm
-#     template_name = 'users/login.html'
-#     extra_context = {'title': "Авторизация"}
 
 def login_user(request):
     if request.method == "POST":
@@ -71,7 +61,6 @@ def profile(request):
     return render(request, 'users/profile.html', context)
 
 
-
 @login_required()  # login_url="/users/login/"
 def lk_user(request):
     zayavki = Zayavki.objects.filter(user_id=request.user.id)
@@ -96,7 +85,6 @@ def lk_user(request):
         'form_receipt': form_receipt,
     }
     return render(request, 'users/lk.html', context)
-
 
 
 ###############################################################
@@ -126,10 +114,8 @@ class ChangePasswordAjax(View):
 #########################################################
 class EditPhoneAjax(View):
     def post(self, request):
-        # form_phone = EditPhone(request.POST)
         reg = "^[+]{1}7 [(]{1}[0-9]{3}[)]{1} [0-9]{3} [0-9]{4}$"
         check_num = re.search(reg, request.POST.get('phone'))
-        # print(f"EditPhoneAjax:{request.user.username}")
         if check_num:
             User.objects.filter(username=request.user.username).update(phone=request.POST.get('phone'))
             return JsonResponse(data={'status': 201, 'response': "Успешно"}, status=200)
@@ -141,14 +127,11 @@ class EditPhoneAjax(View):
 class EditEmailAjax(View):
     def post(self, request):
         if check_email(request.POST.get('email')):
-            # print(f"EditEmail:{request.user.email}")
             if request.POST.get('email') == request.user.email and (request.user.check_email == 1):
-                # print("Обновлять email не надо!")
                 return JsonResponse(data={'status': 201, 'response': "Успешно"}, status=200)
             else:
                 User.objects.filter(username=request.user.username).update(email=request.POST.get('email'),
                                                                            check_email=0)
-                # отправка email для проверки
                 send_email_for_verify(request, request.user, request.POST.get('email'))
                 return JsonResponse(data={'status': 201, 'response': "Подтверждение email на почте"}, status=200)
 
@@ -219,7 +202,6 @@ class EmailVerify(View):
     @staticmethod
     def get_user(uidb64):
         try:
-            # urlsafe_base64_decode() decodes to bytestring
             uid = urlsafe_base64_decode(uidb64).decode()
             user = User.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError,

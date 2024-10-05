@@ -59,7 +59,7 @@ class News(models.Model):
     views = models.IntegerField(verbose_name="Просмотры", default=0)
 
     def get_absolute_url(self):
-        return '/news/{}/'.format(self.slug)
+        return f"/news/{self.slug}/"
 
     def __str__(self):
         return self.title
@@ -85,7 +85,7 @@ class Info(models.Model):
     views = models.IntegerField(verbose_name="Просмотры", default=0)
 
     def get_absolute_url(self):
-        return '/info/{}/'.format(self.slug)
+        return f"/info/{self.slug}/"
 
     def __str__(self):
         return self.title
@@ -107,7 +107,7 @@ class KatDoc(models.Model):
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
 
     def get_absolute_url(self):
-        return '/docs/{}/'.format(self.slug)
+        return f"/docs/{self.slug}/"
 
     def __str__(self):
         return self.name
@@ -141,7 +141,7 @@ class Doc(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/doc/{}/'.format(self.slug)
+        return f"/doc/{self.slug}/"
     ######################################################################
 
 
