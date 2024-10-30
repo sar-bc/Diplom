@@ -17,12 +17,12 @@ $('#form_phone_edit').submit(function(e){
                 $('.response').text(response.response).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     window.location.reload()
-                }, 3000);
+                }, 2000);
             }else if (response.status === 400) {
                 $('.error_phone').text(response.error).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     $('.error_phone').addClass('d-none')
-                }, 3000);
+                }, 2000);
             }
         },
         error: function (response) {
@@ -47,12 +47,12 @@ $('#form_email_edit').submit(function(e){
                 $('.response').text(response.response).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     window.location.reload()
-                }, 3000);
+                }, 2000);
             }else if (response.status === 400) {
                 $('.error_email').text(response.error).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     $('.error_email').addClass('d-none')
-                }, 3000);
+                }, 2000);
             }
 
         },
@@ -79,7 +79,7 @@ $('#form_change_password').submit(function(e){
                     $('.response').text(response.response).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     window.location.href = '/'
-                }, 3000);
+                }, 2000);
                     // window.location.href = '/'
                 }else if (response.status === 400) {
                     // $('.alert-danger').text(response.error).removeClass('d-none')
@@ -139,12 +139,12 @@ $('#form_rec_doc').submit(function(e){
                 $('.response').text(response.response).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     window.location.reload()
-                }, 3000);
+                }, 2000);
             }else if (response.status === 400) {
                 $('.error').text(response.error).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     window.location.reload()
-                }, 3000);
+                }, 2000);
             }
 
         },
@@ -171,13 +171,13 @@ $('#form_send_pokazaniya').submit(function(e){
                 $('.ok_pokaz').text(response.response).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     window.location.reload()
-                }, 3000);
+                }, 2000);
             }else if (response.status === 400) {
                 $('.error_pokaz').text(response.error).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     // window.location.reload()
                     $('.error_pokaz').addClass('d-none')
-                }, 3000);
+                }, 2000);
             }
             
 
@@ -206,13 +206,13 @@ $('#form_zayavka_write').submit(function(e){
                 $('.ok_zayavka').text(response.response).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     window.location.reload()
-                }, 3000);
+                }, 2000);
             }else if (response.status === 400) {
                 $('.error_zayavka').text(response.error).removeClass('d-none').attr('tabindex', '-1').focus();
                 setTimeout(function () {
                     // window.location.reload()
                     $('.error_zayavka').addClass('d-none')
-                }, 3000);
+                }, 2000);
             }
             
 

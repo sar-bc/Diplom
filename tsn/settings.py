@@ -20,7 +20,9 @@ load_dotenv(dotenv_path)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 BOT_TOKEN = str(os.getenv('BOT_TOKEN'))
-SERVER_BOT = 'https://tsnzv.ru'
+# SERVER_BOT = 'https://tsnzv.ru'
+SERVER_BOT = 'https://21b2-95-104-148-73.ngrok-free.app'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -28,9 +30,9 @@ SERVER_BOT = 'https://tsnzv.ru'
 # SECRET_KEY = str(os.getenv('SECRET_KEY'))
 SECRET_KEY = 'django-insecure-ip5001#^#=sc55u#lixc_6lrkg4^rkb@i4865retj(-jq5ionm'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["tsnzv.ru"]
+ALLOWED_HOSTS = ['*']
 
 # Модель User
 AUTH_USER_MODEL = 'users.User'
@@ -49,7 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
+    # 'debug_toolbar',
     'captcha',
     'ckeditor_uploader',
     'ckeditor',
@@ -67,7 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'tsn.urls'
@@ -84,6 +86,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'tsn.context_processors.get_context_menu',
+
             ],
         },
     },
@@ -95,22 +98,13 @@ WSGI_APPLICATION = 'tsn.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": str(os.getenv('NAME_DB')),
-        "USER": str(os.getenv('USER_DB')),
-        "PASSWORD": str(os.getenv('PASSWORD_DB')),
-        "HOST": "localhost",
-        "PORT": "3306",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -149,14 +143,10 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-# /home/users/j/j06264638/domains/tsnzv.ru/public_html/static/  (jino)
-# /home/sar-bc/sites/tsnzv.ru/static/
-# STATIC_ROOT = "/home/sar-bc/sites/tsnzv.ru/static/"
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = []
 
-MEDIA_ROOT = BASE_DIR / '/media'
-# MEDIA_ROOT = "/home/users/j/j06264638/domains/tsnzv.ru/public_html/media/"  # /home/users/j/j06264638/domains/tsnzv.ru/public_html/media/
+MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 #надо для того что бы работал тэг <iframe width="100%" height="800px" src="1.pdf" type="application/pdf"></iframe>
 X_FRAME_OPTIONS = 'SAMEORIGIN'
