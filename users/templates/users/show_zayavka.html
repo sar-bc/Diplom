@@ -26,7 +26,7 @@
     </div><!--row-->
     <div class="row">
         <div class="col m-2 d-flex">
-             <a class="btn btn-sm btn-dark" href="{% url 'users:lk_user' %}">Назад</a>
+             <a class="btn btn-sm btn-card" href="{% url 'users:lk_user' %}">Назад</a>
             <form action="{% url 'users:delete_zayavka' zayavka.id %}" method="post">
         {% csrf_token %}
         <button class="btn btn-sm btn-danger">Удалить</button>
