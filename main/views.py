@@ -22,11 +22,9 @@ def index(request):
 
 #########################################################################################
 def contact(request):
-    # news = News.objects.all().order_by('-id')[:3]
     if request.method == 'POST':
         form = AddMessageForm(request.POST)
         if form.is_valid():
-            # print(form.cleaned_data)
             x = request.POST.dict()
             mess = "Новое сообщение от " + x.get('name') + "; e-mail: " + x.get('email') + "; Тел: " + x.get(
                 'phone') + "; Сообщение: " + x.get('message')
@@ -38,7 +36,6 @@ def contact(request):
         form = AddMessageForm()
     context = {
         'title': 'Контакты',
-        # 'news': news,
         'form': form,
     }
     return render(request, 'main/contact.html', context)
@@ -109,8 +106,6 @@ def news_list(request):
 
 #########################################################################################
 def pageNotFound(request, exception):
-    # year = datetime.date.today().year
-    # cards = Card.objects.all().order_by('id')[:3]
     context = {
         'title': 'Страница не найдена',
     }

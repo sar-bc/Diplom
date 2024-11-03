@@ -20,7 +20,6 @@ from django.conf import settings
 from main.views import pageNotFound
 
 urlpatterns = [
-    # path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
     path('', include('main.urls')),
