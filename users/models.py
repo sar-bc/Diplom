@@ -17,7 +17,7 @@ class User(AbstractUser):
         (True, 'E-mail'),
     )
     rec_doc = models.BooleanField(default=False, choices=TYPE_SELECT, verbose_name="Способ получения платежных "
-                                                                               "документов", blank=True)
+                                                                                   "документов", blank=True)
     check_email = models.BooleanField(default=False, verbose_name='Проверка email', blank=True)
 
     class Meta:
@@ -40,6 +40,7 @@ class Receipts(models.Model):
         verbose_name = 'Квитанции'
         verbose_name_plural = 'Квитанции'
         ordering = ['ls']
+
     def __str__(self):
         return f"Платежка л.сч: {self.ls}"
 ######################################################################
